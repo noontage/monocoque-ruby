@@ -6,7 +6,10 @@
                 "${workspaceFolder}/**",
                 "/usr/local/opt/emscripten/libexec/system/include/"
             ],
-            "defines": [],
+            "defines": [
+                "__EMSCRIPTEN__",
+                "USE_RUBY_COMPILER"
+            ],
             "macFrameworkPath": [
                 "/System/Library/Frameworks",
                 "/Library/Frameworks"

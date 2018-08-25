@@ -6,11 +6,9 @@ def hello
   #  window.alert "hello prompt"
 end
 
-class Hoge
-  def method_missing(method, *params)
-    p method
-    p params
-  end
+def j
+  JavaScriptObject.new
 end
 
-#$j.window.alert("a")
+puts j.Math.pow(2, 3).var
+p j.document.getElementById("test123").textContent = "OK!!!"

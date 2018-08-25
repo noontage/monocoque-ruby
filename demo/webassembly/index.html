@@ -2,31 +2,51 @@
 <html>
 
 <head>
-    <meta charset="UTF-8" />
-    <title>Demo Monocoque Ruby (mnqrb)</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="loading.css">
+    <title>Monocoque-Ruby(mqrb) - Demo</title>
 </head>
 
 <body>
-    <script src="mnqrb-core.js"></script>
-    <script src="mnqrb-lib.js"></script>
+    <div class="loader" style="display: none"></div>
+    <div id="test123">
+        BLOCK
+    </div>
+
+    <script src="mqrb-core.js"></script>
     <script>
+        var module;
+        var dom_loader = document.getElementsByClassName("loader")[0];
+        var loaded = false;
+
+        setTimeout(() => {
+            if (!loaded) {
+                dom_loader.style.display = "block";
+            }
+        }, 1500);
+
         fetch('demo.mrb')
             .then(responce => responce.arrayBuffer())
             .then(buffer => new Uint8Array(buffer))
-            .then(mrbRawIrep => {
-                fetch('mnqrb-core.wasm')
+            .then(mrbByteCode => {
+                fetch('mqrb-core.wasm')
                     .then(response => response.arrayBuffer())
                     .then(buffer => new Uint8Array(buffer))
                     .then(binary => {
                         var moduleArgs = {
                             wasmBinary: binary,
                             onRuntimeInitialized: function () {
-                                console.log('on runtime initialized');
-                                var exec_irep = module.cwrap('exec_irep', null, ['array', 'number']);
-                                exec_irep(mrbRawIrep, mrbRawIrep.length);
+                                loaded = true;
+                                var mqrb_exec_mruby_irep = module.cwrap('mqrb_exec_mruby_irep', null, ['array', 'number']);
+                                //var mqrb_exec_mruby_script = module.cwrap('mqrb_exec_mruby_script', null, ['string', 'number']);
+                                // var s = "p Time.now; p Class.class"
+
+                                mqrb_exec_mruby_irep(mrbByteCode, mrbByteCode.length);
+                                //console.log(mqrb_exec_mruby_script(s, s.length));
+                                dom_loader.style.display = "none";
                             }
                         };
-                        var module = Module(moduleArgs);
+                        module = Module(moduleArgs);
                     });
             });
     </script>

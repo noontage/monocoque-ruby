@@ -1,7 +1,8 @@
 /build
 
 /demo/webassembly/*
-!/demo/webassembly/index.html
+!/demo/webassembly/*.html
+!/demo/webassembly/*.css
 
 *.bak
 *.d

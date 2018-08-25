@@ -3,9 +3,9 @@
 #
 # ============================================================================================
 cmake_minimum_required(VERSION 3.0.0)
-project(mnqrb VERSION 0.1.0)
+project(mqrb VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 11)
-set(MNQRB_OUTPUT_NAME "mnqrb-core")
+set(MQRB_OUTPUT_NAME "mqrb-core")
 
 # ============================================================================================
 # detect arch
@@ -24,9 +24,7 @@ endif()
 
 # ============================================================================================
 # build options
-#option(BUILD_HOST   "Build for Building host architecture"     ON)
-#option(BUILD_ARM    "Build for Linux on ARM CPU architecture"  OFF)
-#option(BUILD_WASM   "Build for Webassembly"                    ON)
+option(USE_RUBY_COMPILER "Use Ruby Compiler" OFF)
 
 # ============================================================================================
 # set library directory
@@ -36,7 +34,14 @@ set(DIR_MRUBY ${PROJECT_SOURCE_DIR}/vendor/mruby)
 # set library path
 set(LIB_MRUBY ${DIR_MRUBY}/build/${TARGET_PLATFORM}/lib/libmruby.a)
 if(${TARGET_PLATFORM} STREQUAL "wasm")
-  set(LIB_MRUBY ${DIR_MRUBY}/build/${TARGET_PLATFORM}/lib/libmruby.bc)
+  if(USE_RUBY_COMPILER)
+    set(LIB_MRUBY ${DIR_MRUBY}/build/wasm-with-compiler/lib/libmruby.bc)
+    add_definitions(-DUSE_RUBY_COMPILER)
+  #elseif(${CMAKE_BUILD_TYPE} MATCHES Debug)
+  #set(LIB_MRUBY ${DIR_MRUBY}/build/wasm-debug/lib/libmruby.bc)
+  else()
+    set(LIB_MRUBY ${DIR_MRUBY}/build/wasm/lib/libmruby.bc)
+  endif()
 endif()
 
 # ============================================================================================
@@ -55,7 +60,7 @@ include_directories(${INCLUDE_DIR})
 # ============================================================================================
 # sources
 FILE(GLOB SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
-add_executable(mnqrb 
+add_executable(mqrb 
   ${SOURCES}
 )
 
@@ -66,23 +71,23 @@ if(NOT EXISTS ${LIB_MRUBY})
     ruby minirake
     WORKING_DIRECTORY ${DIR_MRUBY} 
   )
-  add_dependencies(mnqrb 
+  add_dependencies(mqrb 
     mruby
   )
 endif()
 
 # ============================================================================================
 # target_lunk
-target_link_libraries(mnqrb 
+target_link_libraries(mqrb 
     ${LIB_MRUBY}
 )
 
 # ============================================================================================
 # options for wasm
 if(${TARGET_PLATFORM} STREQUAL "wasm")
-  set_target_properties(mnqrb PROPERTIES
-    LINK_FLAGS "-s WASM=1 -s MODULARIZE=1 -s ASSERTIONS=1 --js-library  ${PROJECT_SOURCE_DIR}/src-js/mnqrb-lib.js -s \"EXTRA_EXPORTED_RUNTIME_METHODS=['cwrap']\""
-    OUTPUT_NAME ${MNQRB_OUTPUT_NAME}
+  set_target_properties(mqrb PROPERTIES
+    LINK_FLAGS "-s WASM=1 -s MODULARIZE=1 -s ASSERTIONS=1 --pre-js ${PROJECT_SOURCE_DIR}/src-js/mqrb-pre.js --js-library ${PROJECT_SOURCE_DIR}/src-js/mqrb-lib.js -s \"EXTRA_EXPORTED_RUNTIME_METHODS=['cwrap','Pointer_stringify']\""
+    OUTPUT_NAME ${MQRB_OUTPUT_NAME}
   )
   set(CMAKE_EXECUTABLE_SUFFIX ".js")
 endif()

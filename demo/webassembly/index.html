@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Demo Monocoque Ruby (mnqrb)</title>
+</head>
+
+<body>
+    <script src="mnqrb-core.js"></script>
+    <script src="mnqrb-lib.js"></script>
+    <script>
+        fetch('demo.mrb')
+            .then(responce => responce.arrayBuffer())
+            .then(buffer => new Uint8Array(buffer))
+            .then(mrbRawIrep => {
+                fetch('mnqrb-core.wasm')
+                    .then(response => response.arrayBuffer())
+                    .then(buffer => new Uint8Array(buffer))
+                    .then(binary => {
+                        var moduleArgs = {
+                            wasmBinary: binary,
+                            onRuntimeInitialized: function () {
+                                console.log('on runtime initialized');
+                                var exec_irep = module.cwrap('exec_irep', null, ['array', 'number']);
+                                exec_irep(mrbRawIrep, mrbRawIrep.length);
+                            }
+                        };
+                        var module = Module(moduleArgs);
+                    });
+            });
+    </script>
+</body>
+
+</html>

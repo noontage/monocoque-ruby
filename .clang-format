@@ -1,0 +1,8 @@
+BasedOnStyle: Chromium
+Standard: Cpp11
+AccessModifierOffset: -2
+AlwaysBreakTemplateDeclarations: true
+NamespaceIndentation: Inner
+BreakBeforeBraces: Mozilla
+Cpp11BracedListStyle: true
+ColumnLimit: 200

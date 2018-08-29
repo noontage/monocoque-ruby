@@ -1,9 +1,6 @@
-#import_function :window
-
 def hello
   p "hello ruby on browzer"
   p Time.now
-  #  window.alert "hello prompt"
 end
 
 def j

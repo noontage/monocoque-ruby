@@ -13,6 +13,14 @@ all:
 wasm:
 	mkdir -p $(BUILD_DIR)
 	./tools/mruby-patcher/patch.sh
+	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
+	cd $(BUILD_DIR); make
+
+# ===== production =====
+.PHONY: production
+production:
+	mkdir -p $(BUILD_DIR)
+	./tools/mruby-patcher/patch.sh
 	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Release
 	cd $(BUILD_DIR); make
 
@@ -21,7 +29,7 @@ wasm:
 wasm_with_compiler:
 	mkdir -p $(BUILD_DIR)
 	./tools/mruby-patcher/patch.sh
-	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DUSE_RUBY_COMPILER=OFF  -DCMAKE_BUILD_TYPE=Debug
+	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DUSE_RUBY_COMPILER=ON  -DCMAKE_BUILD_TYPE=Release
 	cd $(BUILD_DIR); make
 
 # ===== demo =====

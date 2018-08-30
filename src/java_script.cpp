@@ -40,13 +40,13 @@ namespace java_script {
     for (mrb_int i = 0; i < argc; i++) {
       auto value = argv[i];
       switch (mrb_type(value)) {
-        // string
+        // string -> enclose '"'
         case MRB_TT_STRING:
           argv_buf.append("\"");
           argv_buf.append(mrb_str_to_cstr(mrb, value));
           argv_buf.append("\"");
           break;
-        // to_s
+        // bool number symbol array -> to_s
         case MRB_TT_FALSE:
         case MRB_TT_TRUE:
         case MRB_TT_FIXNUM:
@@ -55,13 +55,18 @@ namespace java_script {
         case MRB_TT_ARRAY:
           argv_buf.append(mrb_str_to_cstr(mrb, mrb_funcall(mrb, value, "to_s", 0)));
           break;
-        // to_json
+        // HASH = > to_json
         case MRB_TT_HASH:
           argv_buf.append(mrb_str_to_cstr(mrb, mrb_funcall(mrb, value, "to_json", 0)));
           break;
+        // ToDo
+        // case MRB_TT_PROC:
+        //  break;
         // error
         default:
-          std::cerr << "Unsupport type (" << mrb_type(value) << ")" << std::endl;
+          auto error_message = "Can't converted Ruby value to Javascript value: unsupport type [" + std::to_string(mrb_type(value)) + "]";
+          mrb_raise(mrb, E_RUNTIME_ERROR, error_message.c_str());
+          std::cerr << error_message << std::endl;
       }
       if (argc > (i + 1)) {
         argv_buf.append(",");

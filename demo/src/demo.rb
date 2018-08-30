@@ -8,4 +8,6 @@ def j
 end
 
 puts j.Math.pow(2, 3).var
+j.alert
 p j.document.getElementById("test123").textContent = "OK!!!"
+#j.setTimeout(-> {  }, 1500)

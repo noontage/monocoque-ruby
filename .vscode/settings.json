@@ -28,7 +28,8 @@
         "system_error": "cpp",
         "tuple": "cpp",
         "vector": "cpp",
-        "*.def": "cpp"
+        "*.def": "cpp",
+        "ios": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

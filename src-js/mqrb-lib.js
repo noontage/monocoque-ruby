@@ -42,9 +42,6 @@ if (typeof mergeInto !== undefined) {
                 setValue(len, 0, 'i32');
             }
         },
-        //mqrb_javascript_set_callback_table: function (cb_id) {
-        //    setTimeout(function () { mqrb_call_proc_by_id(cb_id) }, 1000);
-        //}
     });
 }
 

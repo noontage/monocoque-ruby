@@ -1,4 +1,5 @@
 #include <java_script.hpp>
+#include <vm.hpp>
 
 extern "C"
 {
@@ -41,11 +42,13 @@ namespace java_script {
       auto value = argv[i];
       switch (mrb_type(value)) {
         // string -> enclose '"'
-        case MRB_TT_STRING:
+        case MRB_TT_STRING: {
           argv_buf.append("\"");
           argv_buf.append(mrb_str_to_cstr(mrb, value));
           argv_buf.append("\"");
+
           break;
+        }
         // bool number symbol array -> to_s
         case MRB_TT_FALSE:
         case MRB_TT_TRUE:
@@ -56,17 +59,28 @@ namespace java_script {
           argv_buf.append(mrb_str_to_cstr(mrb, mrb_funcall(mrb, value, "to_s", 0)));
           break;
         // HASH = > to_json
-        case MRB_TT_HASH:
+        case MRB_TT_HASH: {
           argv_buf.append(mrb_str_to_cstr(mrb, mrb_funcall(mrb, value, "to_json", 0)));
           break;
-        // ToDo
-        // case MRB_TT_PROC:
-        //  break;
+        }
+          // Proc
+        case MRB_TT_PROC: {
+          // generate js code
+          mrb_int mrb_i = reinterpret_cast<mrb_int>(mrb);
+          mrb_int cb_id = mrb_obj_id(value);  //  instance object_id
+          std::string q = "function() { cwrap('mqrb_call_proc_by_id', 'number', 'number')(" + std::to_string(mrb_i) + ", " + std::to_string(cb_id) + "); }";
+          argv_buf.append(q);
+          // register proc
+          mrb_gc_protect(mrb, value);
+          mqrb::vm::table_callback_proc[cb_id] = value;
+          break;
+        }
         // error
-        default:
+        default: {
           auto error_message = "Can't converted Ruby value to Javascript value: unsupport type [" + std::to_string(mrb_type(value)) + "]";
           mrb_raise(mrb, E_RUNTIME_ERROR, error_message.c_str());
           std::cerr << error_message << std::endl;
+        }
       }
       if (argc > (i + 1)) {
         argv_buf.append(",");

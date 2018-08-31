@@ -1,6 +1,7 @@
 #include <api.h>
 #ifdef __EMSCRIPTEN__
 #include <java_script.hpp>
+#include <vm.hpp>
 #endif
 
 //
@@ -71,7 +72,16 @@ int mqrb_exec_mruby_irep(mrb_state* mrb, const uint8_t* irep, size_t length)
 }
 
 MQRB_API
-int mqrb_call_proc_by_id(mrb_state* mrb, const mrb_int)
+int mqrb_call_proc_by_id(mrb_state* mrb, const mrb_int cb_id)
 {
-  return 0;
+  int ret = 0;
+  mrb_value proc = mqrb::vm::table_callback_proc[cb_id];
+  if (!mrb_nil_p(proc)) {
+    mrb_funcall(mrb, proc, "call", 0);
+    if (is_exception(mrb)) {
+      ret = 1;
+    }
+  }
+  //  ret = mrb_funcall(mrb, proc, "call", sizeof...(args), args...);
+  return ret;
 }

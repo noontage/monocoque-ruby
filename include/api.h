@@ -18,7 +18,7 @@ extern "C"
 
   int mqrb_initialize(mrb_state* mrb);
 
-  // ====================== export ======================
+  // ============================================ MQRB_API ============================================
 
   MQRB_API mrb_state* mqrb_create_instance();
   MQRB_API void mqrb_delete_instance(mrb_state* mrb);

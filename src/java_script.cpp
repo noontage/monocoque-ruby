@@ -190,7 +190,7 @@ namespace java_script {
     std::string script;
     std::string name = std::string(mrb_str_to_cstr(mrb, mrb_funcall(mrb, idx, "to_s", 0)));
 
-    mqrb_jsf_inxop_by_id(id, name.c_str());
+    mqrb_jsf_op_ary_by_id(id, name.c_str());
 
     return self;
   }
@@ -223,24 +223,20 @@ namespace java_script {
     mrb_int argc;
     mrb_get_args(mrb, "n*!", &rb_method, &argv, &argc);
 
-    auto name = std::string(mrb_sym2name(mrb, rb_method));
-    auto jso = static_cast<JavaScriptObject*>(DATA_PTR(self));
-    auto id = reinterpret_cast<mrb_int>(jso);
-    std::string argv_str_buf, script;
+    std::string buf_argvstr;
+    auto method = mrb_sym2name(mrb, rb_method);
+    auto ret = mrb_obj_dup(mrb, self);
+    auto id = reinterpret_cast<mrb_int>(DATA_PTR(ret));
 
     if (argc == 0) {
-      // query_append(jso->q, name);
-      mqrb_jsf_funcall_by_id(id, name.c_str());
+      mqrb_jsf_funcall_by_id(id, method);
     } else {  // if function
-      // make_jsargv(argv_str_buf, mrb, argv, argc);
-      // script = std::string(name) + "(" + argv_str_buf + ")";
-      // query_append(jso->q, script);
-      make_jsargv(argv_str_buf, mrb, argv, argc);
-      script = name + "(" + argv_str_buf + ")";
+      make_jsargv(buf_argvstr, mrb, argv, argc);
+      std::string script = std::string(method) + "(" + buf_argvstr + ")";
       mqrb_jsf_funcall_by_id(id, script.c_str());
     }
 
-    return self;
+    return ret;
   }
 
   //

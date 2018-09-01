@@ -7,12 +7,11 @@ def j
   JavaScriptObject.new
 end
 
-#puts j.Math.pow(2, 3).var
+puts j.Math.pow(2, 3).get_value
 j.document.getElementById("loading").textContent = "OK"
-j.document.getElementById("link1")
-j.exec_eval("alert('hoge')\nalert(n)")
 
-#link2 = link.dup
-#link.addEventListener?("click", -> { j.alert "CLICKED" }, false)
-#link.addEventListener("mouseover", -> { j.alert "ONMOUSE" }, false)
+link1 = j.document.getElementById("link1")
+link1.addEventListener("click", -> { j.alert "CLICKED" }, false)
+link1.addEventListener("mouseover", -> { j.alert "ONMOUSE" }, false)
+
 # j.setTimeout(-> { puts "OK" }, 1500)

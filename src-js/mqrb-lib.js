@@ -5,12 +5,7 @@ if (typeof mergeInto !== undefined) {
         //
         mqrb_jsf_exec_eval: function (str) {
             var script = Pointer_stringify(str);
-            try {
-                return eval(script);
-            } catch (e) {
-                console.error(e);
-                console.error(script);
-            }
+            mqrb_jsf_imp_eval(null, script);
         },
         //
         // mqrb_jsf_new
@@ -24,8 +19,6 @@ if (typeof mergeInto !== undefined) {
         mqrb_jsf_new_copy: function (src, dest) {
             mqrb_jsf_imp_new(dest);
             mqrb_jsf_imp_set(dest, mqrb_jsf_imp_get(src))
-            mqrb_jsf_imp_put_obj(src);
-            mqrb_jsf_imp_put_obj(dest);
         },
         //
         // mqrb_jsf_put_obj
@@ -39,16 +32,16 @@ if (typeof mergeInto !== undefined) {
         mqrb_jsf_funcall_by_id: function (id, str) {
             var script = Pointer_stringify(str);
             var obj = mqrb_jsf_imp_get(id);
-            var ret = eval("obj." + script);
+            var ret = mqrb_jsf_imp_eval(obj, script);
             mqrb_jsf_imp_set(id, ret);
         },
         //
-        // mqrb_jsf_inxop_by_id
+        // mqrb_jsf_op_ary_by_id
         //
-        mqrb_jsf_inxop_by_id: function (id, str) {
+        mqrb_jsf_op_ary_by_id: function (id, str) {
             var script = Pointer_stringify(str);
             var obj = mqrb_jsf_imp_get(id);
-            var ret = eval("obj[" + script + "]");
+            var ret = mqrb_jsf_imp_eval(obj, script, 1);
             mqrb_jsf_imp_set(id, ret);
         },
         //
@@ -57,7 +50,7 @@ if (typeof mergeInto !== undefined) {
         mqrb_jsf_set_value_by_id: function (id, str) {
             var script = Pointer_stringify(str);
             var obj = mqrb_jsf_imp_get(id);
-            var ret = eval("obj=" + script);
+            var ret = mqrb_jsf_imp_eval(obj, script, 2);
             mqrb_jsf_imp_set(id, ret);
         },
         //

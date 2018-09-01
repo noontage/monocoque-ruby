@@ -132,67 +132,15 @@ namespace java_script {
   }
 
   //
-  // mrb_js_eval
+  // mrb_js_exec_eval
   //
-  mrb_value mrb_js_eval(mrb_state* mrb, mrb_value self)
+  mrb_value mrb_js_exec_eval(mrb_state* mrb, mrb_value self)
   {
     char* script;
     mrb_int s_len;
     mrb_get_args(mrb, "s", &script, &s_len);
 
-    mqrb_jsf_eval(script);
-    return self;
-  }
-
-  //
-  // mrb_js_q_function
-  //
-  mrb_value mrb_js_q_function(mrb_state* mrb, mrb_value self)
-  {
-    std::string argv_str_buf, script = "";
-
-    char* name;
-    mrb_int s_len;
-    mrb_value* argv;
-    mrb_int argc;
-    mrb_get_args(mrb, "s*!", &name, &s_len, &argv, &argc);
-
-    make_jsargv(argv_str_buf, mrb, argv, argc);
-    script = std::string(name) + "(" + argv_str_buf + ")";
-
-    auto jso = static_cast<JavaScriptObject*>(DATA_PTR(self));
-    query_append(jso->q, script);
-
-    return self;
-  }
-
-  //
-  // mrb_js_q_object
-  //
-  mrb_value mrb_js_q_object(mrb_state* mrb, mrb_value self)
-  {
-    char* name;
-    mrb_int s_len;
-    mrb_get_args(mrb, "s", &name, &s_len);
-
-    auto jso = static_cast<JavaScriptObject*>(DATA_PTR(self));
-    auto name_s = std::string(name);
-    query_append(jso->q, name_s);
-
-    return self;
-  }
-
-  //
-  // mrb_js_exec
-  //
-  mrb_value mrb_js_exec(mrb_state* mrb, mrb_value self)
-  {
-    auto jso = static_cast<JavaScriptObject*>(DATA_PTR(self));
-
-    std::cout << jso->q << std::endl;
-    mqrb_jsf_funcall_by_id(reinterpret_cast<mrb_int>(jso), jso->q.c_str());
-    jso->q.clear();
-
+    mqrb_jsf_exec_eval(script);
     return self;
   }
 
@@ -206,39 +154,9 @@ namespace java_script {
   }
 
   //
-  // method_missing
+  // mrb_js_get_value
   //
-  mrb_value method_missing(mrb_state* mrb, mrb_value self)
-  {
-    mrb_sym rb_method;
-    mrb_value* argv;
-    mrb_int argc;
-    mrb_get_args(mrb, "n*!", &rb_method, &argv, &argc);
-
-    auto name = std::string(mrb_sym2name(mrb, rb_method));
-    auto jso = static_cast<JavaScriptObject*>(DATA_PTR(self));
-    auto id = reinterpret_cast<mrb_int>(jso);
-    std::string argv_str_buf, script;
-
-    if (argc == 0) {
-      // query_append(jso->q, name);
-      mqrb_jsf_funcall_by_id(id, name.c_str());
-    } else {  // if function
-      // make_jsargv(argv_str_buf, mrb, argv, argc);
-      // script = std::string(name) + "(" + argv_str_buf + ")";
-      // query_append(jso->q, script);
-      make_jsargv(argv_str_buf, mrb, argv, argc);
-      script = name + "(" + argv_str_buf + ")";
-      mqrb_jsf_funcall_by_id(id, script.c_str());
-    }
-
-    return self;
-  }
-
-  //
-  // mrb_js_var
-  //
-  mrb_value mrb_js_var(mrb_state* mrb, mrb_value self)
+  mrb_value mrb_js_get_value(mrb_state* mrb, mrb_value self)
   {
     auto jso = static_cast<JavaScriptObject*>(DATA_PTR(self));
     auto id = reinterpret_cast<mrb_int>(jso);
@@ -296,6 +214,36 @@ namespace java_script {
   }
 
   //
+  // method_missing
+  //
+  mrb_value method_missing(mrb_state* mrb, mrb_value self)
+  {
+    mrb_sym rb_method;
+    mrb_value* argv;
+    mrb_int argc;
+    mrb_get_args(mrb, "n*!", &rb_method, &argv, &argc);
+
+    auto name = std::string(mrb_sym2name(mrb, rb_method));
+    auto jso = static_cast<JavaScriptObject*>(DATA_PTR(self));
+    auto id = reinterpret_cast<mrb_int>(jso);
+    std::string argv_str_buf, script;
+
+    if (argc == 0) {
+      // query_append(jso->q, name);
+      mqrb_jsf_funcall_by_id(id, name.c_str());
+    } else {  // if function
+      // make_jsargv(argv_str_buf, mrb, argv, argc);
+      // script = std::string(name) + "(" + argv_str_buf + ")";
+      // query_append(jso->q, script);
+      make_jsargv(argv_str_buf, mrb, argv, argc);
+      script = name + "(" + argv_str_buf + ")";
+      mqrb_jsf_funcall_by_id(id, script.c_str());
+    }
+
+    return self;
+  }
+
+  //
   // initialize
   //
   int initialize(mrb_state* mrb)
@@ -305,19 +253,12 @@ namespace java_script {
     mrb_define_method(mrb, JavaScriptObject, "initialize", mrb_initialize, MRB_ARGS_NONE());
     mrb_define_method(mrb, JavaScriptObject, "initialize_copy", mrb_initialize_copy, MRB_ARGS_REQ(1));
 
-    // eval
-    mrb_define_method(mrb, JavaScriptObject, "eval", mrb_js_eval, MRB_ARGS_REQ(1));
+    // exec_eval
+    mrb_define_method(mrb, JavaScriptObject, "exec_eval", mrb_js_exec_eval, MRB_ARGS_REQ(1));
 
-    // make quary of javascript
-    mrb_define_method(mrb, JavaScriptObject, "js_q_function", mrb_js_q_function, MRB_ARGS_REQ(1) | MRB_ARGS_ANY());
-    mrb_define_method(mrb, JavaScriptObject, "f", mrb_js_q_function, MRB_ARGS_REQ(1) | MRB_ARGS_ANY());  //  alias: mrb_js_q_object
-    mrb_define_method(mrb, JavaScriptObject, "js_q_object", mrb_js_q_object, MRB_ARGS_REQ(1));
-    mrb_define_method(mrb, JavaScriptObject, "o", mrb_js_q_object, MRB_ARGS_REQ(1));  // alias: mrb_js_q_object
-    mrb_define_method(mrb, JavaScriptObject, "exec", mrb_js_exec, MRB_ARGS_NONE());
-    mrb_define_method(mrb, JavaScriptObject, "put_obj", mrb_js_put_obj, MRB_ARGS_NONE());
-
-    // get value of javascript
-    mrb_define_method(mrb, JavaScriptObject, "var", mrb_js_var, MRB_ARGS_NONE());
+    // instance method
+    mrb_define_method(mrb, JavaScriptObject, "put_obj", mrb_js_put_obj, MRB_ARGS_NONE());      //  print JS object to console.log
+    mrb_define_method(mrb, JavaScriptObject, "get_value", mrb_js_get_value, MRB_ARGS_NONE());  //  get ruby value from JS object
 
     // operator
     mrb_define_method(mrb, JavaScriptObject, "[]", mrb_js_op_ary, MRB_ARGS_REQ(1));

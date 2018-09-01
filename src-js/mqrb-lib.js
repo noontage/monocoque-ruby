@@ -1,11 +1,16 @@
 if (typeof mergeInto !== undefined) {
     mergeInto(LibraryManager.library, {
         //
-        // mqrb_jsf_eval
+        // mqrb_jsf_exec_eval
         //
-        mqrb_jsf_eval: function (str) {
+        mqrb_jsf_exec_eval: function (str) {
             var script = Pointer_stringify(str);
-            eval(script);
+            try {
+                return eval(script);
+            } catch (e) {
+                console.error(e);
+                console.error(script);
+            }
         },
         //
         // mqrb_jsf_new
@@ -19,7 +24,6 @@ if (typeof mergeInto !== undefined) {
         mqrb_jsf_new_copy: function (src, dest) {
             mqrb_jsf_imp_new(dest);
             mqrb_jsf_imp_set(dest, mqrb_jsf_imp_get(src))
-
             mqrb_jsf_imp_put_obj(src);
             mqrb_jsf_imp_put_obj(dest);
         },

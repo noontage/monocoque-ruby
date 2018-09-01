@@ -10,8 +10,7 @@ end
 #puts j.Math.pow(2, 3).var
 j.document.getElementById("loading").textContent = "OK"
 j.document.getElementById("link1")
-
-console = j.console
+j.exec_eval("alert('hoge')\nalert(n)")
 
 #link2 = link.dup
 #link.addEventListener?("click", -> { j.alert "CLICKED" }, false)

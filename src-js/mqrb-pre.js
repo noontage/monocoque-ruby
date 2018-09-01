@@ -1,6 +1,11 @@
-var mqrb_data_obj = new Object();
+var mqrb_data_instance = new Object();
+var mqrb_data_queue = new Array();
+var mqrb_data_bytecode = new Array();
 
-function mqrb_jsf_imp_eval(obj, script, call_type = 0) {
+function mqrb_jsf_imp_eval(obj, script, call_type) {
+  if (!call_type) {
+    call_type = 0;
+  }
   if (!obj) {
     obj = Function('return this')();
   }
@@ -22,18 +27,48 @@ function mqrb_jsf_imp_eval(obj, script, call_type = 0) {
 
 function mqrb_jsf_imp_new(id) {
   if (id !== 0) {
-    mqrb_data_obj[id] = Function('return this')();  // root object
+    mqrb_data_instance[id] = Function('return this')();  // root object
   }
 }
 
 function mqrb_jsf_imp_get(id) {
-  return mqrb_data_obj[id];
+  return mqrb_data_instance[id];
 }
 
 function mqrb_jsf_imp_set(id, obj) {
-  mqrb_data_obj[id] = obj;
+  mqrb_data_instance[id] = obj;
 }
 
-function mqrb_jsf_imp_put_obj(id) {
-  console.log(mqrb_data_obj[id]);
+function mqrb_jsf_imp_print_obj(id) {
+  console.log(mqrb_data_instance[id]);
 }
+
+function mqrb_jsf_imp_push_queue(obj) {
+  mqrb_data_queue.push(obj);
+}
+
+function mqrb_jsf_imp_shift_queue() {
+  return mqrb_data_queue.shift();
+}
+
+function mqrb_jsf_imp_register_bytecode(bytecode) {
+  return mqrb_data_bytecode.push(bytecode);
+}
+
+/*
+function Mqrb() {
+  this.initialize.apply(this, arguments);
+}
+
+Mqrb.prototype = Object.create(Object.prototype);
+Mqrb.prototype.constructor = Mqrb;
+
+Mqrb.prototype.initialize = function () {
+  this._obj = Function('return this')();
+  this._mruby_bytecodes = [];
+}
+
+Mqrb.prototype.register_bytecode = function (bytecode) {
+  return this._mruby_bytecodes.push(bytecode);
+}
+*/

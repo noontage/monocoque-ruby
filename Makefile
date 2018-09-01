@@ -16,9 +16,9 @@ wasm:
 	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
 	cd $(BUILD_DIR); make
 
-# ===== production =====
-.PHONY: production
-production:
+# ===== wasm-production =====
+.PHONY: wasm-production
+wasm-production:
 	mkdir -p $(BUILD_DIR)
 	./tools/mruby-patcher/patch.sh
 	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Release

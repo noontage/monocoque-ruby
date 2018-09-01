@@ -54,8 +54,8 @@ MRuby::CrossBuild.new("wasm") do |conf|
   conf.cc do |cc|
     cc.command = "emcc"
     cc.flags = [ENV["CFLAGS"] || %w(-O3)]
-    cc.defines << %w(MRB_GC_ARENA_SIZE=100)
-    cc.defines << %w(MRB_GC_FIXED_ARENA)
+    #    cc.defines << %w(MRB_GC_ARENA_SIZE=100)
+    #    cc.defines << %w(MRB_GC_FIXED_ARENA)
     cc.defines << %w(MRB_UTF8_STRING)
     cc.include_paths = ["#{root}/include"]
     cc.option_include_path = "-I%s"
@@ -89,8 +89,8 @@ MRuby::CrossBuild.new("wasm-with-compiler") do |conf|
   conf.cc do |cc|
     cc.command = "emcc"
     cc.flags = [ENV["CFLAGS"] || %w(-O3)]
-    cc.defines << %w(MRB_GC_ARENA_SIZE=100)
-    cc.defines << %w(MRB_GC_FIXED_ARENA)
+    #    cc.defines << %w(MRB_GC_ARENA_SIZE=100)
+    #    cc.defines << %w(MRB_GC_FIXED_ARENA)
     cc.defines << %w(MRB_UTF8_STRING)
     cc.include_paths = ["#{root}/include"]
     cc.option_include_path = "-I%s"
@@ -116,6 +116,43 @@ MRuby::CrossBuild.new("wasm-with-compiler") do |conf|
   # gembox
   conf.gembox "mnqrb"
   conf.gem :core => "mruby-compiler"
+end
+
+MRuby::CrossBuild.new("wasm-debug") do |conf|
+  toolchain :clang
+
+  enable_debug
+
+  # C compiler settings
+  conf.cc do |cc|
+    cc.command = "emcc"
+    cc.flags = [ENV["CFLAGS"] || %w(-O3)]
+    #    cc.defines << %w(MRB_GC_ARENA_SIZE=100)
+    #    cc.defines << %w(MRB_GC_FIXED_ARENA)
+    cc.defines << %w(MRB_UTF8_STRING)
+    cc.include_paths = ["#{root}/include"]
+    cc.option_include_path = "-I%s"
+    cc.option_define = "-D%s"
+    cc.compile_options = "%{flags} -c %{infile} -s WASM=1 -o %{outfile}"
+  end
+
+  # Archiver settings
+  conf.archiver do |archiver|
+    archiver.command = "emcc"
+    archiver.archive_options = "%{objs} -s WASM=1 -o %{outfile}"
+  end
+
+  # file extensions
+  conf.exts do |exts|
+    exts.object = ".bc"
+    exts.library = ".bc"
+  end
+
+  #no executables
+  conf.bins = []
+
+  # gembox
+  conf.gembox "mnqrb"
 end
 
 # MRuby::Build.new("arm") do |conf|

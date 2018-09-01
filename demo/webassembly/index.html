@@ -39,12 +39,12 @@
                             onRuntimeInitialized: function () {
                                 loaded = true;
                                 var mqrb_create_instance = module.cwrap('mqrb_create_instance', 'number');
-                                var mqrb_exec_mruby_irep = module.cwrap('mqrb_exec_mruby_irep', null, ['number', 'array', 'number']);
+                                var mqrb_exec_irep = module.cwrap('mqrb_exec_irep', null, ['number', 'array']);
                                 //var mqrb_exec_mruby_script = module.cwrap('mqrb_exec_mruby_script', null, ['string', 'number']);
                                 //var s = "p (1..10).class"
 
                                 var mrb = mqrb_create_instance();
-                                mqrb_exec_mruby_irep(mrb, mrbByteCode, mrbByteCode.length);
+                                mqrb_exec_irep(mrb, mrbByteCode);
                                 //console.log(mqrb_exec_mruby_script(s, s.length));
                                 dom_loader.style.display = "none";
                             }

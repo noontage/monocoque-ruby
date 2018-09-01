@@ -21,42 +21,57 @@ if (typeof mergeInto !== undefined) {
             mqrb_jsf_imp_set(dest, mqrb_jsf_imp_get(src))
         },
         //
-        // mqrb_jsf_put_obj
+        // mqrb_jsf_shift_global_queue
         //
-        mqrb_jsf_put_obj: function (id) {
-            mqrb_jsf_imp_put_obj(id);
+        mqrb_jsf_shift_global_queue: function (id) {
+            mqrb_jsf_imp_set(id, mqrb_jsf_imp_shift_queue());
         },
         //
-        // mqrb_jsf_funcall_by_id
+        // mqrb_jsf_register_bytecode
         //
-        mqrb_jsf_funcall_by_id: function (id, str) {
+        mqrb_jsf_register_bytecode: function (ptr, size) {
+            var bytecode = new Uint8Array(size);
+            bytecode.set(module.HEAP8.subarray(ptr, ptr + size));
+            console.log(bytecode);
+            return mqrb_jsf_imp_register_bytecode(bytecode);
+        },
+        //
+        // mqrb_jsf_print_obj
+        //
+        mqrb_jsf_print_obj: function (id) {
+            mqrb_jsf_imp_print_obj(id);
+        },
+        //
+        // mqrb_jsf_funcall
+        //
+        mqrb_jsf_funcall: function (id, str) {
             var script = Pointer_stringify(str);
             var obj = mqrb_jsf_imp_get(id);
-            var ret = mqrb_jsf_imp_eval(obj, script);
+            var ret = mqrb_jsf_imp_eval(obj, script, 0);
             mqrb_jsf_imp_set(id, ret);
         },
         //
-        // mqrb_jsf_op_ary_by_id
+        // mqrb_jsf_op_ary
         //
-        mqrb_jsf_op_ary_by_id: function (id, str) {
+        mqrb_jsf_op_ary: function (id, str) {
             var script = Pointer_stringify(str);
             var obj = mqrb_jsf_imp_get(id);
             var ret = mqrb_jsf_imp_eval(obj, script, 1);
             mqrb_jsf_imp_set(id, ret);
         },
         //
-        // mqrb_jsf_set_value_by_id
+        // mqrb_jsf_set_value
         //
-        mqrb_jsf_set_value_by_id: function (id, str) {
+        mqrb_jsf_set_value: function (id, str) {
             var script = Pointer_stringify(str);
             var obj = mqrb_jsf_imp_get(id);
             var ret = mqrb_jsf_imp_eval(obj, script, 2);
             mqrb_jsf_imp_set(id, ret);
         },
         //
-        // mqrb_jsf_get_value_by_id
+        // mqrb_jsf_get_value
         //
-        mqrb_jsf_get_value_by_id: function (id, buf, len, max_len) {
+        mqrb_jsf_get_value: function (id, buf, len, max_len) {
             var value = mqrb_jsf_imp_get(id);
             try {
                 var data = JSON.stringify(value);

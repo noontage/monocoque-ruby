@@ -1,4 +1,5 @@
 MRuby::GemBox.new do |conf|
+  conf.gem :core => "mruby-metaprog"
   conf.gem :core => "mruby-io"
   conf.gem :core => "mruby-pack"
   conf.gem :core => "mruby-sprintf"
@@ -24,7 +25,6 @@ MRuby::GemBox.new do |conf|
   conf.gem :core => "mruby-toplevel-ext"
   conf.gem :core => "mruby-kernel-ext"
   conf.gem :core => "mruby-class-ext"
-  #  conf.gem :core => "mruby-compiler"
 
   # gems of additional
   conf.gem :github => "mattn/mruby-json"

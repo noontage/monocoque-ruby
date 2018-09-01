@@ -15,6 +15,7 @@ extern "C"
 #endif
 
   extern void mqrb_jsf_new(mrb_int id);
+  extern void mqrb_jsf_new_copy(mrb_int src, mrb_int dest);
   extern void mqrb_jsf_put_obj(mrb_int id);
   extern void mqrb_jsf_eval(const char* script);
   extern void mqrb_jsf_funcall_by_id(mrb_int id, const char* script);

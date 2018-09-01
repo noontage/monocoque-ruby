@@ -16,9 +16,12 @@ if (typeof mergeInto !== undefined) {
         //
         // mqrb_jsf_new_copy
         //
-        mqrb_jsf_new_copy: function (id, id_src) {
-            mqrb_jsf_imp_new(id);
-            mqrb_jsf_imp_set(id, mqrb_jsf_imp_get(id_src))
+        mqrb_jsf_new_copy: function (src, dest) {
+            mqrb_jsf_imp_new(dest);
+            mqrb_jsf_imp_set(dest, mqrb_jsf_imp_get(src))
+
+            mqrb_jsf_imp_put_obj(src);
+            mqrb_jsf_imp_put_obj(dest);
         },
         //
         // mqrb_jsf_put_obj

@@ -9,8 +9,11 @@ end
 
 #puts j.Math.pow(2, 3).var
 j.document.getElementById("loading").textContent = "OK"
+j.document.getElementById("link1")
 
-#link = j.document.getElementById("link1")
+console = j.console
+
+#link2 = link.dup
 #link.addEventListener?("click", -> { j.alert "CLICKED" }, false)
 #link.addEventListener("mouseover", -> { j.alert "ONMOUSE" }, false)
 # j.setTimeout(-> { puts "OK" }, 1500)

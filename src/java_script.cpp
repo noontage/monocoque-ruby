@@ -103,6 +103,35 @@ namespace java_script {
   }
 
   //
+  // mrb_initialize_copy
+  //
+  mrb_value mrb_initialize_copy(mrb_state* mrb, mrb_value self)
+  {
+    mrb_value src;
+    mrb_get_args(mrb, "o", &src);
+    if (mrb_obj_equal(mrb, self, src)) {
+      return self;
+    }
+
+    if (!mrb_obj_is_instance_of(mrb, src, mrb_obj_class(mrb, self))) {
+      mrb_raise(mrb, E_TYPE_ERROR, "wrong argument class");
+    }
+
+    if (!DATA_PTR(self)) {
+      DATA_TYPE(self) = &DS_JavaScriptObject;
+      DATA_PTR(self) = static_cast<void*>(new JavaScriptObject());
+    }
+
+    // copy
+    auto id_src = reinterpret_cast<mrb_int>(DATA_PTR(src));
+    auto id_self = reinterpret_cast<mrb_int>(DATA_PTR(self));
+    *(struct JavaScriptObject*)DATA_PTR(self) = *(struct JavaScriptObject*)DATA_PTR(src);
+    mqrb_jsf_new_copy(id_src, id_self);
+
+    return self;
+  }
+
+  //
   // mrb_js_eval
   //
   mrb_value mrb_js_eval(mrb_state* mrb, mrb_value self)
@@ -274,7 +303,7 @@ namespace java_script {
     auto JavaScriptObject = mrb_define_class(mrb, "JavaScriptObject", mrb->object_class);
 
     mrb_define_method(mrb, JavaScriptObject, "initialize", mrb_initialize, MRB_ARGS_NONE());
-    mrb_define_method(mrb, JavaScriptObject, "initialize_copy", mrb_initialize, MRB_ARGS_REQ(1));  //   ToDo
+    mrb_define_method(mrb, JavaScriptObject, "initialize_copy", mrb_initialize_copy, MRB_ARGS_REQ(1));
 
     // eval
     mrb_define_method(mrb, JavaScriptObject, "eval", mrb_js_eval, MRB_ARGS_REQ(1));

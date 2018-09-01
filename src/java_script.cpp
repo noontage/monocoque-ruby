@@ -1,15 +1,5 @@
+#include <instance.hpp>
 #include <java_script.hpp>
-#include <vm.hpp>
-
-extern "C"
-{
-  extern void mqrb_javascript_new(mrb_int id);
-  extern void mqrb_javascript_eval(const char* script);
-  extern void mqrb_javascript_funcall_by_id(mrb_int id, const char* script);
-  extern void mqrb_javascript_inxop_by_id(mrb_int id, const char* script);
-  extern void mqrb_javascript_set_value_by_id(mrb_int id, const char* script);
-  extern void mqrb_javascript_get_value_by_id(mrb_int id, char* buf, mrb_int* len, size_t max_len);
-}
 
 namespace mqrb {
 namespace java_script {
@@ -46,7 +36,6 @@ namespace java_script {
           argv_buf.append("\"");
           argv_buf.append(mrb_str_to_cstr(mrb, value));
           argv_buf.append("\"");
-
           break;
         }
         // bool number symbol array -> to_s
@@ -109,7 +98,7 @@ namespace java_script {
     DATA_TYPE(self) = &DS_JavaScriptObject;
     DATA_PTR(self) = static_cast<void*>(new JavaScriptObject());
 
-    mqrb_javascript_new(reinterpret_cast<mrb_int>(DATA_PTR(self)));
+    mqrb_jsf_new(reinterpret_cast<mrb_int>(DATA_PTR(self)));
     return self;
   }
 
@@ -122,7 +111,7 @@ namespace java_script {
     mrb_int s_len;
     mrb_get_args(mrb, "s", &script, &s_len);
 
-    mqrb_javascript_eval(script);
+    mqrb_jsf_eval(script);
     return self;
   }
 
@@ -170,9 +159,20 @@ namespace java_script {
   mrb_value mrb_js_exec(mrb_state* mrb, mrb_value self)
   {
     auto jso = static_cast<JavaScriptObject*>(DATA_PTR(self));
-    mqrb_javascript_eval(jso->q.c_str());
+
+    std::cout << jso->q << std::endl;
+    mqrb_jsf_funcall_by_id(reinterpret_cast<mrb_int>(jso), jso->q.c_str());
     jso->q.clear();
 
+    return self;
+  }
+
+  //
+  // mrb_js_put_obj
+  //
+  mrb_value mrb_js_put_obj(mrb_state* mrb, mrb_value self)
+  {
+    mqrb_jsf_put_obj(reinterpret_cast<mrb_int>(DATA_PTR(self)));
     return self;
   }
 
@@ -191,12 +191,16 @@ namespace java_script {
     auto id = reinterpret_cast<mrb_int>(jso);
     std::string argv_str_buf, script;
 
-    if (argc == 0) {  // if object
-      mqrb_javascript_funcall_by_id(id, name.c_str());
+    if (argc == 0) {
+      // query_append(jso->q, name);
+      mqrb_jsf_funcall_by_id(id, name.c_str());
     } else {  // if function
+      // make_jsargv(argv_str_buf, mrb, argv, argc);
+      // script = std::string(name) + "(" + argv_str_buf + ")";
+      // query_append(jso->q, script);
       make_jsargv(argv_str_buf, mrb, argv, argc);
       script = name + "(" + argv_str_buf + ")";
-      mqrb_javascript_funcall_by_id(id, script.c_str());
+      mqrb_jsf_funcall_by_id(id, script.c_str());
     }
 
     return self;
@@ -212,7 +216,7 @@ namespace java_script {
 
     char buf[WORKING_STRING_BUFFER];
     mrb_int len;
-    mqrb_javascript_get_value_by_id(id, buf, &len, WORKING_STRING_BUFFER);
+    mqrb_jsf_get_value_by_id(id, buf, &len, WORKING_STRING_BUFFER);
 
     auto ai = mrb_gc_arena_save(mrb);
     mrb_value ret = mrb_str_new(mrb, buf, len);
@@ -227,9 +231,9 @@ namespace java_script {
   }
 
   //
-  // mrb_js_aryop
+  // mrb_js_op_ary
   //
-  mrb_value mrb_js_aryop(mrb_state* mrb, mrb_value self)
+  mrb_value mrb_js_op_ary(mrb_state* mrb, mrb_value self)
   {
     mrb_value idx;
     mrb_get_args(mrb, "o", &idx);
@@ -239,15 +243,15 @@ namespace java_script {
     std::string script;
     std::string name = std::string(mrb_str_to_cstr(mrb, mrb_funcall(mrb, idx, "to_s", 0)));
 
-    mqrb_javascript_inxop_by_id(id, name.c_str());
+    mqrb_jsf_inxop_by_id(id, name.c_str());
 
     return self;
   }
 
   //
-  // mrb_js_set_value
+  // mrb_js_op_eq
   //
-  mrb_value mrb_js_set_value(mrb_state* mrb, mrb_value self)
+  mrb_value mrb_js_op_eq(mrb_state* mrb, mrb_value self)
   {
     mrb_value idx;
     mrb_get_args(mrb, "o", &idx);
@@ -257,7 +261,7 @@ namespace java_script {
     std::string script;
     std::string name = std::string(mrb_str_to_cstr(mrb, mrb_funcall(mrb, idx, "to_s", 0)));
 
-    mqrb_javascript_set_value_by_id(id, name.c_str());
+    mqrb_jsf_set_value_by_id(id, name.c_str());
 
     return self;
   }
@@ -270,7 +274,7 @@ namespace java_script {
     auto JavaScriptObject = mrb_define_class(mrb, "JavaScriptObject", mrb->object_class);
 
     mrb_define_method(mrb, JavaScriptObject, "initialize", mrb_initialize, MRB_ARGS_NONE());
-    // TODO: initialize_copy
+    mrb_define_method(mrb, JavaScriptObject, "initialize_copy", mrb_initialize, MRB_ARGS_REQ(1));  //   ToDo
 
     // eval
     mrb_define_method(mrb, JavaScriptObject, "eval", mrb_js_eval, MRB_ARGS_REQ(1));
@@ -281,13 +285,14 @@ namespace java_script {
     mrb_define_method(mrb, JavaScriptObject, "js_q_object", mrb_js_q_object, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, JavaScriptObject, "o", mrb_js_q_object, MRB_ARGS_REQ(1));  // alias: mrb_js_q_object
     mrb_define_method(mrb, JavaScriptObject, "exec", mrb_js_exec, MRB_ARGS_NONE());
+    mrb_define_method(mrb, JavaScriptObject, "put_obj", mrb_js_put_obj, MRB_ARGS_NONE());
 
     // get value of javascript
     mrb_define_method(mrb, JavaScriptObject, "var", mrb_js_var, MRB_ARGS_NONE());
 
     // operator
-    mrb_define_method(mrb, JavaScriptObject, "[]", mrb_js_aryop, MRB_ARGS_REQ(1));
-    mrb_define_method(mrb, JavaScriptObject, "=", mrb_js_set_value, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, JavaScriptObject, "[]", mrb_js_op_ary, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, JavaScriptObject, "=", mrb_js_op_eq, MRB_ARGS_REQ(1));
 
     // dynamic execute javascript
     mrb_define_method(mrb, JavaScriptObject, "method_missing", method_missing, MRB_ARGS_REQ(2));

@@ -8,9 +8,9 @@ def j
 end
 
 #puts j.Math.pow(2, 3).var
-#j.alert
-#p j.document.getElementById("test123").textContent = "OK!!!"
-#j.test
-#j.document.getElementById("test123")
+j.document.getElementById("loading").textContent = "OK"
 
-j.setTimeout(-> { j.alert "OK" }, 1500)
+#link = j.document.getElementById("link1")
+#link.addEventListener?("click", -> { j.alert "CLICKED" }, false)
+#link.addEventListener("mouseover", -> { j.alert "ONMOUSE" }, false)
+# j.setTimeout(-> { puts "OK" }, 1500)

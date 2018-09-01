@@ -1,7 +1,7 @@
 #include <api.h>
 #ifdef __EMSCRIPTEN__
 #include <java_script.hpp>
-#include <vm.hpp>
+#include <instance.hpp>
 #endif
 
 //

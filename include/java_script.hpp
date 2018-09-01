@@ -8,3 +8,21 @@ namespace java_script {
 
 }  // namespace java_script
 }  // namespace mqrb
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+  extern void mqrb_jsf_new(mrb_int id);
+  extern void mqrb_jsf_put_obj(mrb_int id);
+  extern void mqrb_jsf_eval(const char* script);
+  extern void mqrb_jsf_funcall_by_id(mrb_int id, const char* script);
+  extern void mqrb_jsf_inxop_by_id(mrb_int id, const char* script);
+  extern void mqrb_jsf_set_value_by_id(mrb_int id, const char* script);
+  extern void mqrb_jsf_get_value_by_id(mrb_int id, char* buf, mrb_int* len, size_t max_len);
+
+// extern "C"
+#ifdef __cplusplus
+}
+#endif

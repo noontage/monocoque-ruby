@@ -1,4 +1,4 @@
-#include <vm.hpp>
+#include <instance.hpp>
 
 namespace mqrb {
 namespace vm {

@@ -56,6 +56,7 @@ MRuby::CrossBuild.new("wasm") do |conf|
     cc.flags = [ENV["CFLAGS"] || %w(-O3)]
     cc.defines << %w(MRB_GC_ARENA_SIZE=100)
     cc.defines << %w(MRB_GC_FIXED_ARENA)
+    cc.defines << %w(MRB_UTF8_STRING)
     cc.include_paths = ["#{root}/include"]
     cc.option_include_path = "-I%s"
     cc.option_define = "-D%s"
@@ -90,6 +91,7 @@ MRuby::CrossBuild.new("wasm-with-compiler") do |conf|
     cc.flags = [ENV["CFLAGS"] || %w(-O3)]
     cc.defines << %w(MRB_GC_ARENA_SIZE=100)
     cc.defines << %w(MRB_GC_FIXED_ARENA)
+    cc.defines << %w(MRB_UTF8_STRING)
     cc.include_paths = ["#{root}/include"]
     cc.option_include_path = "-I%s"
     cc.option_define = "-D%s"

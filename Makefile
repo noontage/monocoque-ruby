@@ -52,3 +52,4 @@ clean:
 clean-deep:
 	make clean
 	cd vendor/mruby; rake deep_clean
+	rm -f vendor/mruby/mrbgems/mnqrb.gembox

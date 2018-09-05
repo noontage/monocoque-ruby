@@ -54,8 +54,6 @@ MRuby::CrossBuild.new("wasm") do |conf|
   conf.cc do |cc|
     cc.command = "emcc"
     cc.flags = [ENV["CFLAGS"] || %w(-O3)]
-    #    cc.defines << %w(MRB_GC_ARENA_SIZE=100)
-    #    cc.defines << %w(MRB_GC_FIXED_ARENA)
     cc.defines << %w(MRB_UTF8_STRING)
     cc.include_paths = ["#{root}/include"]
     cc.option_include_path = "-I%s"
@@ -89,8 +87,6 @@ MRuby::CrossBuild.new("wasm-with-compiler") do |conf|
   conf.cc do |cc|
     cc.command = "emcc"
     cc.flags = [ENV["CFLAGS"] || %w(-O3)]
-    #    cc.defines << %w(MRB_GC_ARENA_SIZE=100)
-    #    cc.defines << %w(MRB_GC_FIXED_ARENA)
     cc.defines << %w(MRB_UTF8_STRING)
     cc.include_paths = ["#{root}/include"]
     cc.option_include_path = "-I%s"
@@ -126,7 +122,7 @@ MRuby::CrossBuild.new("wasm-debug") do |conf|
   # C compiler settings
   conf.cc do |cc|
     cc.command = "emcc"
-    cc.flags = [ENV["CFLAGS"] || %w(-O3)]
+    cc.flags = [ENV["CFLAGS"] || %w(-g3)]
     #    cc.defines << %w(MRB_GC_ARENA_SIZE=100)
     #    cc.defines << %w(MRB_GC_FIXED_ARENA)
     cc.defines << %w(MRB_UTF8_STRING)

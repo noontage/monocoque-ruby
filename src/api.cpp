@@ -5,6 +5,18 @@
 #endif
 
 //
+// mqrb_initialize();
+//
+MQRB_API
+int mqrb_initialize()
+{
+#ifdef __EMSCRIPTEN__
+  mqrb_jsf_initialize();
+#endif
+  return 0;
+}
+
+//
 // mqrb_create_instance();
 //
 MQRB_API

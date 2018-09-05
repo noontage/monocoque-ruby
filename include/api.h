@@ -19,6 +19,7 @@ extern "C"
 
   // ============================================ MQRB_API ============================================
 
+  MQRB_API int mqrb_initialize();
   MQRB_API mqrb::RubyInstance* mqrb_create_instance();
   MQRB_API void mqrb_delete_instance(mqrb::RubyInstance* instance);
 

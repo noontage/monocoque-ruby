@@ -13,6 +13,7 @@ extern "C"
 {
 #endif
 
+  extern void mqrb_jsf_initialize();
   extern void mqrb_jsf_exec_eval(const char* script);
   extern void mqrb_jsf_new(mrb_int id);
   extern void mqrb_jsf_new_copy(mrb_int src, mrb_int dest);

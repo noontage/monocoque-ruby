@@ -83,10 +83,10 @@ namespace JavaScriptObject {
           // register param to queue
           std::string q_callback_script = "";
           for (char i = 0x61; i < (argc + 0x61); i++) {
-            q_callback_script += "mqrb_jsf_imp_push_queue(" + std::string{i} + ");\n";
+            q_callback_script += "Mqrb.push_queue(" + std::string{i} + ");\n";
           }
-          q_callback_script += "cwrap('mqrb_exec_irep_by_callback_index', 'number', ['number', 'number', 'number'])(" + std::to_string(reinterpret_cast<mrb_int>(instance)) + ", " + std::to_string(cb_index) + ", " +
-                               std::to_string(argc) + ");";
+          q_callback_script += "cwrap('mqrb_exec_irep_by_callback_index', 'number', ['number', 'number', 'number'])(" + std::to_string(reinterpret_cast<mrb_int>(instance)) + ", " +
+                               std::to_string(cb_index) + ", " + std::to_string(argc) + ");";
           std::string q = "(" + q_argvs + ") => {\n " + q_callback_script + "\n }";
 
           argv_buf.append(q);

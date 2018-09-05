@@ -51,10 +51,6 @@ function mqrb_jsf_imp_shift_queue() {
   return mqrb_data_queue.shift();
 }
 
-function mqrb_jsf_imp_register_bytecode(bytecode) {
-  return mqrb_data_bytecode.push(bytecode);
-}
-
 /*
 function Mqrb() {
   this.initialize.apply(this, arguments);

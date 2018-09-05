@@ -21,16 +21,16 @@ if (typeof mergeInto !== undefined) {
             mqrb_jsf_imp_set(dest, mqrb_jsf_imp_get(src))
         },
         //
-        // mqrb_jsf_shift_global_queue
-        //
-        mqrb_jsf_shift_global_queue: function (id) {
-            mqrb_jsf_imp_set(id, mqrb_jsf_imp_shift_queue());
-        },
-        //
         // mqrb_jsf_print_obj
         //
         mqrb_jsf_print_obj: function (id) {
             mqrb_jsf_imp_print_obj(id);
+        },
+        //
+        // mqrb_jsf_shift_global_queue
+        //
+        mqrb_jsf_shift_global_queue: function (id) {
+            mqrb_jsf_imp_set(id, mqrb_jsf_imp_shift_queue());
         },
         //
         // mqrb_jsf_funcall

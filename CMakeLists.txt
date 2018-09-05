@@ -85,14 +85,19 @@ target_link_libraries(mqrb
 # ============================================================================================
 # options for wasm
 if(${TARGET_PLATFORM} STREQUAL "wasm")
-  set_target_properties(mqrb PROPERTIES
-    LINK_FLAGS "-s WASM=1 -s MODULARIZE=1\
-     --pre-js ${PROJECT_SOURCE_DIR}/src-js/mqrb-pre.js \
-     --js-library ${PROJECT_SOURCE_DIR}/src-js/mqrb-lib.js \
-     -s \"ASSERTIONS=2\" \
-     -s \"DEMANGLE_SUPPORT=1\" \
-     -s \"EXTRA_EXPORTED_RUNTIME_METHODS=['cwrap','Pointer_stringify', 'UTF8ToString', 'writeArrayToMemory']\""
-    OUTPUT_NAME ${MQRB_OUTPUT_NAME}
-  )
+  if(${CMAKE_BUILD_TYPE} MATCHES Debug)
+    set(WASM_OPT_ASSERTIONS "-s ASSERTIONS=2")
+  else()
+    set(WASM_OPT_ASSERTIONS "-s ASSERTIONS=1")
+  endif()
+    message(WASM_OPT_ASSERTIONS)
+    set_target_properties(mqrb PROPERTIES
+      LINK_FLAGS "-s WASM=1 -s MODULARIZE=1\
+      --pre-js ${PROJECT_SOURCE_DIR}/src-js/mqrb-pre.js \
+      --js-library ${PROJECT_SOURCE_DIR}/src-js/mqrb-lib.js \
+      ${WASM_OPT_ASSERTIONS} \
+      -s \"EXTRA_EXPORTED_RUNTIME_METHODS=['cwrap','Pointer_stringify', 'UTF8ToString', 'writeArrayToMemory']\""
+      OUTPUT_NAME ${MQRB_OUTPUT_NAME}
+    )
   set(CMAKE_EXECUTABLE_SUFFIX ".js")
 endif()

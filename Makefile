@@ -24,9 +24,9 @@ wasm-production:
 	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Release
 	cd $(BUILD_DIR); make
 
-# ===== wasm_with_compiler =====
-.PHONY: wasm_with_compiler
-wasm_with_compiler:
+# ===== wasm-with-compiler =====
+.PHONY: wasm-with-compiler
+wasm-with-compiler:
 	mkdir -p $(BUILD_DIR)
 	./tools/mruby-patcher/patch.sh
 	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DUSE_RUBY_COMPILER=ON  -DCMAKE_BUILD_TYPE=Release
@@ -35,7 +35,7 @@ wasm_with_compiler:
 # ===== demo =====
 .PHONY: demo
 demo:
-	# make wasm_with_compiler
+	# make wasm-with-compiler
 	make wasm
 	vendor/mruby/bin/mrbc demo/src/demo.rb
 	cp -f $(BUILD_DIR)/mqrb-core.wasm demo/webassembly

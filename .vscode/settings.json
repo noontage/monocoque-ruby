@@ -28,7 +28,17 @@
         "system_error": "cpp",
         "tuple": "cpp",
         "vector": "cpp",
-        "*.def": "cpp"
+        "*.def": "cpp",
+        "ios": "cpp",
+        "iosfwd": "cpp",
+        "irep.h": "c",
+        "__functional_03": "cpp",
+        "__split_buffer": "cpp",
+        "__hash_table": "cpp",
+        "__tree": "cpp",
+        "map": "cpp",
+        "unordered_map": "cpp",
+        "utility": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

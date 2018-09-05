@@ -8,7 +8,8 @@
             ],
             "defines": [
                 "__EMSCRIPTEN__",
-                "USE_RUBY_COMPILER"
+                "USE_RUBY_COMPILER",
+                "MRB_DEBUG"
             ],
             "macFrameworkPath": [
                 "/System/Library/Frameworks",

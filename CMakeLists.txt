@@ -86,7 +86,12 @@ target_link_libraries(mqrb
 # options for wasm
 if(${TARGET_PLATFORM} STREQUAL "wasm")
   set_target_properties(mqrb PROPERTIES
-    LINK_FLAGS "-s WASM=1 -s MODULARIZE=1 -s ASSERTIONS=1 --pre-js ${PROJECT_SOURCE_DIR}/src-js/mqrb-pre.js --js-library ${PROJECT_SOURCE_DIR}/src-js/mqrb-lib.js -s \"EXTRA_EXPORTED_RUNTIME_METHODS=['cwrap','Pointer_stringify']\""
+    LINK_FLAGS "-s WASM=1 -s MODULARIZE=1\
+     --pre-js ${PROJECT_SOURCE_DIR}/src-js/mqrb-pre.js \
+     --js-library ${PROJECT_SOURCE_DIR}/src-js/mqrb-lib.js \
+     -s \"ASSERTIONS=2\" \
+     -s \"DEMANGLE_SUPPORT=1\" \
+     -s \"EXTRA_EXPORTED_RUNTIME_METHODS=['cwrap','Pointer_stringify', 'UTF8ToString', 'writeArrayToMemory']\""
     OUTPUT_NAME ${MQRB_OUTPUT_NAME}
   )
   set(CMAKE_EXECUTABLE_SUFFIX ".js")

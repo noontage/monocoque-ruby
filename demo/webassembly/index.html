@@ -8,10 +8,11 @@
 </head>
 
 <body>
-    <div class="loader" style="display: none"></div>
-    <div id="test123">
-        BLOCK
+    <div id="loading">
+        Loading...
     </div>
+    <a href="#" id="link1">Click Here!!</a>
+    <div class="loader" style="display: none"></div>
 
     <script src="mqrb-core.js"></script>
     <script>
@@ -37,11 +38,13 @@
                             wasmBinary: binary,
                             onRuntimeInitialized: function () {
                                 loaded = true;
-                                var mqrb_exec_mruby_irep = module.cwrap('mqrb_exec_mruby_irep', null, ['array', 'number']);
+                                var mqrb_create_instance = module.cwrap('mqrb_create_instance', 'number');
+                                var mqrb_exec_irep = module.cwrap('mqrb_exec_irep', null, ['number', 'array']);
                                 //var mqrb_exec_mruby_script = module.cwrap('mqrb_exec_mruby_script', null, ['string', 'number']);
-                                // var s = "p Time.now; p Class.class"
+                                //var s = "p (1..10).class"
 
-                                mqrb_exec_mruby_irep(mrbByteCode, mrbByteCode.length);
+                                var mrb = mqrb_create_instance();
+                                mqrb_exec_irep(mrb, mrbByteCode);
                                 //console.log(mqrb_exec_mruby_script(s, s.length));
                                 dom_loader.style.display = "none";
                             }

@@ -1,3 +1,4 @@
+#ifdef __EMSCRIPTEN__
 #include <java_script.hpp>
 #include <ruby_instance.hpp>
 
@@ -287,3 +288,4 @@ namespace java_script {
 
 }  // namespace java_script
 }  // namespace mqrb
+#endif

@@ -1,6 +1,5 @@
-#include <api.h>
-#include <common.h>
 #ifdef __EMSCRIPTEN__
+#include <common.h>
 #include <emscripten.h>
 
 int main()

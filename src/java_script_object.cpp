@@ -1,12 +1,12 @@
 #ifdef __EMSCRIPTEN__
-#include <java_script.hpp>
+#include <java_script_object.hpp>
 #include <ruby_instance.hpp>
 
 namespace mqrb {
-namespace java_script {
+namespace JavaScriptObject {
 
   //
-  // mqrb::java_script
+  // mqrb::JavaScriptObject
   //
 
   RClass* RC_JavaScriptObject;  //  RClass
@@ -104,7 +104,7 @@ namespace java_script {
       }
     }
     return;
-  }  // namespace java_script
+  }  // namespace JavaScriptObject
 
   //
   // query_append
@@ -286,6 +286,6 @@ namespace java_script {
     return 0;
   }
 
-}  // namespace java_script
+}  // namespace JavaScriptObject
 }  // namespace mqrb
 #endif

@@ -1,6 +1,6 @@
 #include <ruby_instance.hpp>
 #ifdef __EMSCRIPTEN__
-#include <java_script.hpp>
+#include <java_script_object.hpp>
 #endif
 
 namespace mqrb {
@@ -17,7 +17,7 @@ RubyInstance::RubyInstance()
   proc_bin.reserve(4);
 
 #ifdef __EMSCRIPTEN__
-  mqrb::java_script::initialize(mrb);  // JavaScriptObject class
+  mqrb::JavaScriptObject::initialize(mrb);  // JavaScriptObject class
 #endif
 }
 

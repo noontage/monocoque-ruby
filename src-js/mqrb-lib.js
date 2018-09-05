@@ -27,15 +27,6 @@ if (typeof mergeInto !== undefined) {
             mqrb_jsf_imp_set(id, mqrb_jsf_imp_shift_queue());
         },
         //
-        // mqrb_jsf_register_bytecode
-        //
-        mqrb_jsf_register_bytecode: function (ptr, size) {
-            var bytecode = new Uint8Array(size);
-            bytecode.set(module.HEAP8.subarray(ptr, ptr + size));
-            console.log(bytecode);
-            return mqrb_jsf_imp_register_bytecode(bytecode);
-        },
-        //
         // mqrb_jsf_print_obj
         //
         mqrb_jsf_print_obj: function (id) {

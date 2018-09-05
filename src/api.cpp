@@ -1,7 +1,7 @@
 #include <api.h>
 #include <ruby_instance.hpp>
 #ifdef __EMSCRIPTEN__
-#include <java_script.hpp>
+#include <java_script_object.hpp>
 #endif
 
 //
@@ -72,7 +72,7 @@ int mqrb_exec_irep_by_callback_index(mqrb::RubyInstance* instance, int cb_index,
   } else {
     mrb_value argv[argc];
     for (int i = 0; i < argc; i++) {
-      auto jso = mrb_obj_new(mrb, mqrb::java_script::RC_JavaScriptObject, 0, nullptr);
+      auto jso = mrb_obj_new(mrb, mqrb::JavaScriptObject::RC_JavaScriptObject, 0, nullptr);
       mqrb_jsf_shift_global_queue(reinterpret_cast<mrb_int>(mrb_obj_ptr(jso)));
       argv[i] = jso;
     }

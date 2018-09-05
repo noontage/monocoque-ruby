@@ -2,10 +2,10 @@
 #include <common.h>
 
 namespace mqrb {
-namespace java_script {
+namespace JavaScriptObject {
   extern RClass* RC_JavaScriptObject;
   extern int initialize(mrb_state* mrb);
-}  // namespace java_script
+}  // namespace JavaScriptObject
 }  // namespace mqrb
 
 #ifdef __cplusplus

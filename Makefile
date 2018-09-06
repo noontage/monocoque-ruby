@@ -13,7 +13,7 @@ all:
 wasm:
 	mkdir -p $(BUILD_DIR)
 	./tools/mruby-patcher/patch.sh
-	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
+	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_RUBY_COMPILER=ON
 	cd $(BUILD_DIR); make
 
 # ===== wasm-production =====

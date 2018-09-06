@@ -24,7 +24,9 @@ endif()
 
 # ============================================================================================
 # build options
-option(USE_RUBY_COMPILER "Use Ruby Compiler" OFF)
+option(USE_RUBY_COMPILER "Use Build and bundle ruby compiler." OFF)
+option(USE_EXPORT_ES6    "[WASM] Output ES6."                  OFF)
+
 
 # ============================================================================================
 # set library directory
@@ -33,12 +35,17 @@ set(DIR_MRUBY ${PROJECT_SOURCE_DIR}/vendor/mruby)
 # ============================================================================================
 # set library path
 set(LIB_MRUBY ${DIR_MRUBY}/build/${TARGET_PLATFORM}/lib/libmruby.a)
+
+# if host
+# [TODO]
+
+# if wasm
 if(${TARGET_PLATFORM} STREQUAL "wasm")
   if(USE_RUBY_COMPILER)
     set(LIB_MRUBY ${DIR_MRUBY}/build/wasm-with-compiler/lib/libmruby.bc)
     add_definitions(-DUSE_RUBY_COMPILER)
-  #elseif(${CMAKE_BUILD_TYPE} MATCHES Debug)
-  #set(LIB_MRUBY ${DIR_MRUBY}/build/wasm-debug/lib/libmruby.bc)
+  elseif(${CMAKE_BUILD_TYPE} MATCHES Debug)
+    set(LIB_MRUBY ${DIR_MRUBY}/build/wasm-debug/lib/libmruby.bc)
   else()
     set(LIB_MRUBY ${DIR_MRUBY}/build/wasm/lib/libmruby.bc)
   endif()
@@ -48,6 +55,10 @@ endif()
 # configuration
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "limited configs" FORCE)
 set(CMAKE_SUPPRESS_REGENERATION true)
+
+if(${CMAKE_BUILD_TYPE} MATCHES Debug)
+  add_definitions(-DMQRB_DEBUG_MODE)
+endif()
 
 # ============================================================================================
 # include
@@ -85,18 +96,36 @@ target_link_libraries(mqrb
 # ============================================================================================
 # options for wasm
 if(${TARGET_PLATFORM} STREQUAL "wasm")
+  set(WASM_COMPILE_OPTION "")
+  
+  #string(APPEND WASM_COMPILE_OPTION "-s EXPORT_ES6=1 ")
+  #string(APPEND WASM_COMPILE_OPTION "-s TOTAL_MEMORY=64MB -s BINARYEN_MEM_MAX=2147418112 ")
+  
+  # option: debug Assertions
   if(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    set(WASM_OPT_ASSERTIONS "-s ASSERTIONS=2")
+    string(APPEND WASM_COMPILE_OPTION "-s ASSERTIONS=2 ")
+    string(APPEND WASM_COMPILE_OPTION "-s SAFE_HEAP=1 ")
   else()
-    set(WASM_OPT_ASSERTIONS "-s ASSERTIONS=1")
+    string(APPEND WASM_COMPILE_OPTION "-s ASSERTIONS=1 ")
   endif()
-    message(WASM_OPT_ASSERTIONS)
-    set_target_properties(mqrb PROPERTIES
+
+  # option: output ES6
+  if(USE_EXPORT_ES6)
+    string(APPEND WASM_COMPILE_OPTION "-s EXPORT_ES6=1 ")
+  endif()
+
+  # option: othrer
+  string(APPEND WASM_COMPILE_OPTION "-s NO_FILESYSTEM=1 ")
+  string(APPEND WASM_COMPILE_OPTION "-s ALLOW_MEMORY_GROWTH=1 ")
+  string(APPEND WASM_COMPILE_OPTION "-s DEMANGLE_SUPPORT=1 ")
+
+  # set output properties
+  set_target_properties(mqrb PROPERTIES
       LINK_FLAGS "-s WASM=1 -s MODULARIZE=1\
       --pre-js ${PROJECT_SOURCE_DIR}/src-js/mqrb-pre.js \
       --js-library ${PROJECT_SOURCE_DIR}/src-js/mqrb-lib.js \
-      ${WASM_OPT_ASSERTIONS} \
-      -s \"EXTRA_EXPORTED_RUNTIME_METHODS=['cwrap','Pointer_stringify', 'UTF8ToString', 'writeArrayToMemory']\""
+      ${WASM_COMPILE_OPTION} \
+      -s \"EXTRA_EXPORTED_RUNTIME_METHODS=['cwrap','Pointer_stringify', 'UTF8ToString']\""
       OUTPUT_NAME ${MQRB_OUTPUT_NAME}
     )
   set(CMAKE_EXECUTABLE_SUFFIX ".js")

@@ -39,7 +39,7 @@ void mqrb_delete_instance(mqrb::RubyInstance* instance)
 //
 #ifdef USE_RUBY_COMPILER
 MQRB_API
-int mqrb_exec_script(mqrb::RubyInstance* instance, const char* script, size_t length)
+int mqrb_exec_script(mqrb::RubyInstance* instance, const char* script)
 {
   int ret = 0;
   auto mrb = instance->mrb;
@@ -77,6 +77,7 @@ int mqrb_exec_irep_by_callback_index(mqrb::RubyInstance* instance, int cb_index,
   int ret = 0;
   auto rb_instance = static_cast<mqrb::RubyInstance*>(instance);
   auto mrb = rb_instance->mrb;
+
   auto proc = rb_instance->get_proc_by_index(cb_index);
 
   if (argc == 0) {

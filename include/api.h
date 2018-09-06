@@ -25,7 +25,7 @@ extern "C"
 
 // if use ruby compiler
 #ifdef USE_RUBY_COMPILER
-  MQRB_API int mqrb_exec_script(mqrb::RubyInstance* instance, const char* script, size_t length);
+  MQRB_API int mqrb_exec_script(mqrb::RubyInstance* instance, const char* script);
 #endif
   MQRB_API int mqrb_exec_irep(mqrb::RubyInstance* instance, const uint8_t* bin);
 

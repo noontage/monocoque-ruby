@@ -1,8 +1,11 @@
-var mqrb_data_instance = new Object();
-var mqrb_data_queue = new Array();
-var mqrb_data_bytecode = new Array();
+function Mqrb() { }
 
-function mqrb_jsf_imp_eval(obj, script, call_type) {
+Mqrb.initialize = function () {
+  Mqrb._instance = new Object();
+  Mqrb._queue = new Array();
+}
+
+Mqrb.eval = function (obj, script, call_type) {
   if (!call_type) {
     call_type = 0;
   }
@@ -25,50 +28,32 @@ function mqrb_jsf_imp_eval(obj, script, call_type) {
   }
 }
 
-function mqrb_jsf_imp_new(id) {
-  if (id !== 0) {
-    mqrb_data_instance[id] = Function('return this')();  // root object
+Mqrb.create = function (id) {
+  if (id === 0) {
+    throw ('[ERROR] invalid Mqrb instance id.');
   }
+  if (!Mqrb._instance) {
+    throw ('[ERROR] Uninitialized Mqrb javascript library. please call mqrb_initialize() function.')
+  }
+  Mqrb._instance[id] = Function('return this')();  // root object
 }
 
-function mqrb_jsf_imp_get(id) {
-  return mqrb_data_instance[id];
+Mqrb.get = function (id) {
+  return Mqrb._instance[id];
 }
 
-function mqrb_jsf_imp_set(id, obj) {
-  mqrb_data_instance[id] = obj;
+Mqrb.set = function (id, obj) {
+  Mqrb._instance[id] = obj;
 }
 
-function mqrb_jsf_imp_print_obj(id) {
-  console.log(mqrb_data_instance[id]);
+Mqrb.print_obj = function (id) {
+  console.log(Mqrb._instance[id]);
 }
 
-function mqrb_jsf_imp_push_queue(obj) {
-  mqrb_data_queue.push(obj);
+Mqrb.push_queue = function (obj) {
+  Mqrb._queue.push(obj);
 }
 
-function mqrb_jsf_imp_shift_queue() {
-  return mqrb_data_queue.shift();
+Mqrb.shift_queue = function () {
+  return Mqrb._queue.shift();
 }
-
-function mqrb_jsf_imp_register_bytecode(bytecode) {
-  return mqrb_data_bytecode.push(bytecode);
-}
-
-/*
-function Mqrb() {
-  this.initialize.apply(this, arguments);
-}
-
-Mqrb.prototype = Object.create(Object.prototype);
-Mqrb.prototype.constructor = Mqrb;
-
-Mqrb.prototype.initialize = function () {
-  this._obj = Function('return this')();
-  this._mruby_bytecodes = [];
-}
-
-Mqrb.prototype.register_bytecode = function (bytecode) {
-  return this._mruby_bytecodes.push(bytecode);
-}
-*/

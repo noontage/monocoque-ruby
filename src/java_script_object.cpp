@@ -1,11 +1,12 @@
-#include <java_script.hpp>
+#ifdef __EMSCRIPTEN__
+#include <java_script_object.hpp>
 #include <ruby_instance.hpp>
 
 namespace mqrb {
-namespace java_script {
+namespace JavaScriptObject {
 
   //
-  // mqrb::java_script
+  // mqrb::JavaScriptObject
   //
 
   RClass* RC_JavaScriptObject;  //  RClass
@@ -19,7 +20,7 @@ namespace java_script {
   //
   void js_free(mrb_state* mrb, void* p)
   {
-    std::cout << "GC" << p << std::endl;
+    std::cout << "GC: " << p << std::endl;
     mrb_free(mrb, p);
   }
   const mrb_data_type DS_JavaScriptObject = {"JavaScriptObject", js_free};
@@ -82,10 +83,10 @@ namespace java_script {
           // register param to queue
           std::string q_callback_script = "";
           for (char i = 0x61; i < (argc + 0x61); i++) {
-            q_callback_script += "mqrb_jsf_imp_push_queue(" + std::string{i} + ");\n";
+            q_callback_script += "Mqrb.push_queue(" + std::string{i} + ");\n";
           }
-          q_callback_script += "cwrap('mqrb_exec_irep_by_callback_index', 'number', ['number', 'number', 'number'])(" + std::to_string(reinterpret_cast<mrb_int>(instance)) + ", " + std::to_string(cb_index) + ", " +
-                               std::to_string(argc) + ");";
+          q_callback_script += "cwrap('mqrb_exec_irep_by_callback_index', 'number', ['number', 'number', 'number'])(" + std::to_string(reinterpret_cast<mrb_int>(instance)) + ", " + std::to_string(cb_index) +
+                               ", " + std::to_string(argc) + ");";
           std::string q = "(" + q_argvs + ") => {\n " + q_callback_script + "\n }";
 
           argv_buf.append(q);
@@ -103,7 +104,7 @@ namespace java_script {
       }
     }
     return;
-  }  // namespace java_script
+  }  // namespace JavaScriptObject
 
   //
   // query_append
@@ -178,7 +179,7 @@ namespace java_script {
     mrb_int len;
     mqrb_jsf_get_value(id, buffer_working, &len, WORKING_STRING_BUFFER);
 
-    auto ai = mrb_gc_arena_save(mrb);
+    auto ai       = mrb_gc_arena_save(mrb);
     mrb_value ret = mrb_str_new(mrb, buffer_working, len);
     if (mrb_str_strlen(mrb, RSTRING(ret)) == 0) {
       return mrb_nil_value();
@@ -237,8 +238,8 @@ namespace java_script {
     auto ai = mrb_gc_arena_save(mrb);
 
     std::string buf_argvstr;
-    auto method = mrb_sym2name(mrb, rb_method);
-    auto copy = mrb_obj_dup(mrb, self);
+    auto method  = mrb_sym2name(mrb, rb_method);
+    auto copy    = mrb_obj_dup(mrb, self);
     auto copy_id = reinterpret_cast<mrb_int>(mrb_obj_ptr(copy));
 
     if (argc == 0) {
@@ -285,5 +286,6 @@ namespace java_script {
     return 0;
   }
 
-}  // namespace java_script
+}  // namespace JavaScriptObject
 }  // namespace mqrb
+#endif

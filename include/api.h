@@ -1,5 +1,6 @@
 #pragma once
 #include <common.h>
+#include <ruby_instance.hpp>
 
 #ifdef __cplusplus
 extern "C"
@@ -18,17 +19,20 @@ extern "C"
 
   // ============================================ MQRB_API ============================================
 
-  MQRB_API void* mqrb_create_instance();
-  MQRB_API void mqrb_delete_instance(void* instance);
+  MQRB_API int mqrb_initialize();
+  MQRB_API mqrb::RubyInstance* mqrb_create_instance();
+  MQRB_API void mqrb_delete_instance(mqrb::RubyInstance* instance);
 
 // if use ruby compiler
 #ifdef USE_RUBY_COMPILER
-  MQRB_API int mqrb_exec_script(void* instance, const char* script, size_t length);
+  MQRB_API int mqrb_exec_script(mqrb::RubyInstance* instance, const char* script);
 #endif
-  MQRB_API int mqrb_exec_irep(void* instance, const uint8_t* bin);
-  MQRB_API int mqrb_exec_irep_by_callback_index(void* instance, int cb_index, int argc);
+  MQRB_API int mqrb_exec_irep(mqrb::RubyInstance* instance, const uint8_t* bin);
 
-  // MQRB_API int mqrb_call_proc_by_id(mqrb::RubyInstance* instance, const mrb_int, const mrb_int argc);  
+// if emscripten
+#ifdef __EMSCRIPTEN__
+  MQRB_API int mqrb_exec_irep_by_callback_index(mqrb::RubyInstance* instance, int cb_index, int argc);
+#endif
 
 // extern "C"
 #ifdef __cplusplus

@@ -5,4 +5,5 @@ AlwaysBreakTemplateDeclarations: true
 NamespaceIndentation: Inner
 BreakBeforeBraces: Mozilla
 Cpp11BracedListStyle: true
-ColumnLimit: 200
+ColumnLimit: 210
+AlignConsecutiveAssignments: true

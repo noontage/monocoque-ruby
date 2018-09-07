@@ -18,6 +18,8 @@ j.setTimeout(-> {
   j.alert "Welcome"
 }, 1000)
 
+j._eval "console.log('hoge')"
+
 hello
 
 puts j.Math.pow(2, 3).get_value
@@ -27,6 +29,7 @@ link1 = j.document.getElementById("link1")
 
 link1.addEventListener("click", -> event {
   j.alert "onclick"
+  puts event._p
 }, false)
 
 j.window.addEventListener("keypress", -> event {

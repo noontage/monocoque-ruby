@@ -5,6 +5,8 @@ Monocoque Ruby (mqrb)
 
 Monocoque-Ruby(mqrb) is quick and easy executing Ruby code that runs on the WebBrowser.
 
+(This project is still a work in progress.)
+
 
 ## More
 

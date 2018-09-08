@@ -6,4 +6,4 @@ NamespaceIndentation: Inner
 BreakBeforeBraces: Mozilla
 Cpp11BracedListStyle: true
 ColumnLimit: 210
-AlignConsecutiveAssignments: true
+#AlignConsecutiveAssignments: true

@@ -12,7 +12,7 @@ std::unordered_map<mrb_state*, RubyInstance*> RubyInstance::tbl_mrb_instance;
 //
 RubyInstance::RubyInstance()
 {
-  mrb                   = mrb_open();
+  mrb = mrb_open();
   tbl_mrb_instance[mrb] = this;
   proc_bin.reserve(4);
 
@@ -42,7 +42,7 @@ size_t RubyInstance::register_proc(const mrb_value proc)
   size_t size;
 
   auto rproc = mrb_proc_ptr(proc);
-  auto ret   = mrb_dump_irep(mrb, mrb_proc_ptr(proc)->body.irep, DUMP_ENDIAN_NAT, &bin, &size);
+  auto ret = mrb_dump_irep(mrb, mrb_proc_ptr(proc)->body.irep, DUMP_ENDIAN_NAT, &bin, &size);
   if (ret != MRB_DUMP_OK) {
     std::cout << "[ERROR] Can't dump mruby irep." << std::endl;
     return -1;
@@ -59,9 +59,9 @@ mrb_value RubyInstance::get_proc_by_index(size_t index)
 {
   auto ai = mrb_gc_arena_save(mrb);
 
-  auto irep  = mrb_read_irep(mrb, proc_bin.at(index)->p);
+  auto irep = mrb_read_irep(mrb, proc_bin.at(index)->p);
   auto rproc = mrb_closure_new(mrb, irep);
-  auto proc  = mrb_obj_value(rproc);
+  auto proc = mrb_obj_value(rproc);
 
   mrb_gc_arena_restore(mrb, ai);
 

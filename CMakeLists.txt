@@ -42,11 +42,14 @@ set(LIB_MRUBY ${DIR_MRUBY}/build/${TARGET_PLATFORM}/lib/libmruby.a)
 # if wasm
 if(${TARGET_PLATFORM} STREQUAL "wasm")
   if(USE_RUBY_COMPILER)
+    message("-- mruby link: production with-ruby-compiler")
     set(LIB_MRUBY ${DIR_MRUBY}/build/wasm-with-compiler/lib/libmruby.bc)
     add_definitions(-DUSE_RUBY_COMPILER)
   elseif(${CMAKE_BUILD_TYPE} MATCHES Debug)
+    message("-- mruby link: debug")
     set(LIB_MRUBY ${DIR_MRUBY}/build/wasm-debug/lib/libmruby.bc)
   else()
+    message("-- mruby link: production")
     set(LIB_MRUBY ${DIR_MRUBY}/build/wasm/lib/libmruby.bc)
   endif()
 endif()
@@ -98,9 +101,6 @@ target_link_libraries(mqrb
 if(${TARGET_PLATFORM} STREQUAL "wasm")
   set(WASM_COMPILE_OPTION "")
   
-  #string(APPEND WASM_COMPILE_OPTION "-s EXPORT_ES6=1 ")
-  #string(APPEND WASM_COMPILE_OPTION "-s TOTAL_MEMORY=64MB -s BINARYEN_MEM_MAX=2147418112 ")
-  
   # option: debug Assertions
   if(${CMAKE_BUILD_TYPE} MATCHES Debug)
     string(APPEND WASM_COMPILE_OPTION "-s ASSERTIONS=2 ")
@@ -114,9 +114,14 @@ if(${TARGET_PLATFORM} STREQUAL "wasm")
     string(APPEND WASM_COMPILE_OPTION "-s EXPORT_ES6=1 ")
   endif()
 
-  # option: othrer
-  string(APPEND WASM_COMPILE_OPTION "-s NO_FILESYSTEM=1 ")
+  # memory
   string(APPEND WASM_COMPILE_OPTION "-s ALLOW_MEMORY_GROWTH=1 ")
+  string(APPEND WASM_COMPILE_OPTION "-s BINARYEN_MEM_MAX=2147418112 ")
+  string(APPEND WASM_COMPILE_OPTION "-s TOTAL_MEMORY=64MB ")
+
+  # option: othrer
+  #string(APPEND WASM_COMPILE_OPTION "-s EXPORT_ES6=1 ")  
+  string(APPEND WASM_COMPILE_OPTION "-s NO_FILESYSTEM=1 ")
   string(APPEND WASM_COMPILE_OPTION "-s DEMANGLE_SUPPORT=1 ")
 
   # set output properties

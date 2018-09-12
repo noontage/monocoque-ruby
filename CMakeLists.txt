@@ -24,8 +24,9 @@ endif()
 
 # ============================================================================================
 # build options
-option(USE_RUBY_COMPILER "Use Build and bundle ruby compiler." OFF)
-option(USE_EXPORT_ES6    "[WASM] Output ES6."                  OFF)
+option(USE_RUBY_COMPILER "Use Build and bundle ruby compiler."            OFF)
+option(USE_BUILD_WASM    "[WASM] Build Webassembly."                       ON)
+option(USE_EXPORT_ES6    "[WASM] Output ES6."                             OFF)
 
 
 # ============================================================================================
@@ -37,7 +38,9 @@ set(DIR_MRUBY ${PROJECT_SOURCE_DIR}/vendor/mruby)
 set(LIB_MRUBY ${DIR_MRUBY}/build/${TARGET_PLATFORM}/lib/libmruby.a)
 
 # if host
-# [TODO]
+if(${TARGET_PLATFORM} STREQUAL "host")
+  add_definitions(-DBUILD_HOST)
+endif()
 
 # if wasm
 if(${TARGET_PLATFORM} STREQUAL "wasm")
@@ -114,6 +117,11 @@ if(${TARGET_PLATFORM} STREQUAL "wasm")
     string(APPEND WASM_COMPILE_OPTION "-s EXPORT_ES6=1 ")
   endif()
 
+  # option: build wasm
+  if(USE_BUILD_WASM)
+    string(APPEND WASM_COMPILE_OPTION "-s WASM=1 ")
+  endif()
+
   # memory
   string(APPEND WASM_COMPILE_OPTION "-s ALLOW_MEMORY_GROWTH=1 ")
   string(APPEND WASM_COMPILE_OPTION "-s BINARYEN_MEM_MAX=2147418112 ")
@@ -126,10 +134,10 @@ if(${TARGET_PLATFORM} STREQUAL "wasm")
 
   # set output properties
   set_target_properties(mqrb PROPERTIES
-      LINK_FLAGS "-s WASM=1 -s MODULARIZE=1\
+      LINK_FLAGS "-s MODULARIZE=1\
+      ${WASM_COMPILE_OPTION} \
       --pre-js ${PROJECT_SOURCE_DIR}/src-js/mqrb-pre.js \
       --js-library ${PROJECT_SOURCE_DIR}/src-js/mqrb-lib.js \
-      ${WASM_COMPILE_OPTION} \
       -s \"EXTRA_EXPORTED_RUNTIME_METHODS=['cwrap','Pointer_stringify', 'UTF8ToString']\""
       OUTPUT_NAME ${MQRB_OUTPUT_NAME}
     )

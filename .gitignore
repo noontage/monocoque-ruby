@@ -3,6 +3,7 @@
 /demo/webassembly/*
 !/demo/webassembly/*.html
 !/demo/webassembly/*.css
+./vscode
 
 *.bak
 *.d

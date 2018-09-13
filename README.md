@@ -12,10 +12,7 @@ Monocoque-Ruby(mqrb) is quick and easy executing Ruby code that runs on the WebB
 
 ## More
 
-The final aim of mqrb is a skeleton is generated with one command and try ruby on the webbrowzer.
-
-You think that this project is Similar to [webruby](https://github.com/xxuejie/webruby).
-however unfortunately webruby is not maintained.
+The final aim of mqrb is a skeleton is generated with one command and try ruby on the webbrowzer.
 
 
 ## How to use
@@ -25,16 +22,29 @@ It still haven't impleiment command-line-tools.
 
 ## How to build
 
-### Require tools
+### Native Build
 
- - emscripten
-   - This project use `emcc` command. For details, please refer to the official [website](https://kripken.github.io/emscripten-site/docs/getting_started/downloads.html).
+#### Require tools
+
+ - Ruby (CRuby)
 
  - CMake
 
-### Build
+ - Clang
 
-`make wasm`
+ - Emscripten
+   - This project use `emcc` command. For details, please refer to the official [website](https://kripken.github.io/emscripten-site/docs/getting_started/downloads.html).
+
+#### Build
+
+`make wasm-production`
+
+
+### Docker
+
+  1. `docker build --no-cache -t emscripten:mqrb .`
+  1. `docker run -dit --name emscripten -v $(pwd):/src emscripten:mqrb bash`
+  1. `docker exec -it -e MRUBY_CONFIG="../../tools/mruby-patcher/build_config.wasm.rb" emscripten make wasm-production`
 
 
 ## License

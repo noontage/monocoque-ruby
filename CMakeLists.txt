@@ -95,6 +95,7 @@ endif()
 
 # ============================================================================================
 # target_lunk
+message(${LIB_MRUBY})
 target_link_libraries(mqrb 
     ${LIB_MRUBY}
 )

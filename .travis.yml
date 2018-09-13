@@ -23,3 +23,9 @@ script:
 #  - make
 #  - export MRUBY_CONFIG="../../tools/mruby-patcher/build_config.wasm.rb"
   - docker exec -it -e MRUBY_CONFIG="../../tools/mruby-patcher/build_config.wasm.rb" emscripten make wasm-production
+
+branches:
+  only:
+  - master
+  - stable
+  - ci-test

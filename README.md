@@ -3,6 +3,8 @@ Monocoque Ruby (mqrb)
 
 [![Build Status](https://travis-ci.org/noontage/monocoque-ruby.svg?branch=master)](https://travis-ci.org/noontage/monocoque-ruby)
 
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+
 ## Summary
 
 Monocoque-Ruby(mqrb) is quick and easy executing Ruby code that runs on the WebBrowser.

@@ -85,7 +85,7 @@ add_executable(mqrb
 # mruby
 if(NOT EXISTS ${LIB_MRUBY})
   add_custom_target(mruby
-    ruby minirake
+    COMMAND MRUBY_CONFIG=${PROJECT_SOURCE_DIR}/build/build_config.rb ruby minirake
     WORKING_DIRECTORY ${DIR_MRUBY} 
   )
   add_dependencies(mqrb 

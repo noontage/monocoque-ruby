@@ -8,12 +8,17 @@ all:
 	cd $(BUILD_DIR); cmake ../
 	cd $(BUILD_DIR); make #VERBOSE=1
 
+# ===== mruby =====
+.PHONY: mruby
+mruby:
+	cd vendor/mruby/; ./minirake
+
 # ===== wasm =====
 .PHONY: wasm
 wasm:
 	mkdir -p $(BUILD_DIR)
 	./tools/mruby-patcher/patch.sh
-	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_RUBY_COMPILER=ON
+	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
 	cd $(BUILD_DIR); make
 
 # ===== wasm-production =====
@@ -29,6 +34,14 @@ wasm-production:
 wasm-with-compiler:
 	mkdir -p $(BUILD_DIR)
 	./tools/mruby-patcher/patch.sh
+	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DUSE_RUBY_COMPILER=ON  -DCMAKE_BUILD_TYPE=Debug
+	cd $(BUILD_DIR); make
+
+# ===== wasm-with-compiler-production =====
+.PHONY: wasm-with-compiler-production
+wasm-with-compiler-production:
+	mkdir -p $(BUILD_DIR)
+	./tools/mruby-patcher/patch.sh
 	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DUSE_RUBY_COMPILER=ON  -DCMAKE_BUILD_TYPE=Release
 	cd $(BUILD_DIR); make
 
@@ -36,9 +49,7 @@ wasm-with-compiler:
 .PHONY: demo
 demo:
 	vendor/mruby/bin/mrbc demo/src/demo.rb
-#	make wasm-with-compiler
-#	make wasm-production
-	make wasm
+	make wasm-with-compiler-production
 	cp -f $(BUILD_DIR)/mqrb-core.wasm demo/webassembly
 	cp -f $(BUILD_DIR)/mqrb-core.js demo/webassembly
 	mv -f demo/src/demo.mrb demo/webassembly

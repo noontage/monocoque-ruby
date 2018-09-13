@@ -1,12 +1,12 @@
 language: cpp
 
 os:
-  - linux
-#  - osx
+  - osx
 
 compiler:
-  - gcc
-#  - clang
+  - clang
 
-script:
+  script:
+  - export MRUBY_CONFIG="../../tools/mruby-patcher/build_config.host.rb"
+  - make mruby
   - make

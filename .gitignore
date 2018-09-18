@@ -1,9 +1,6 @@
 ./vscode
 /build
 
-/demo/webassembly/*
-!/demo/webassembly/*.html
-!/demo/webassembly/*.css
 
 *.bak
 *.d

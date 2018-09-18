@@ -2,32 +2,6 @@
 # = set_mqrb_build_conf
 #
 def set_mqrb_build_conf(conf, gems = [])
-  # C compiler settings
-  conf.cc do |cc|
-    cc.command = "emcc"
-    cc.flags = [ENV["CFLAGS"] || %w(-O3)]
-    cc.defines << %w(MRB_UTF8_STRING)
-    cc.include_paths = ["#{root}/include"]
-    cc.option_include_path = "-I%s"
-    cc.option_define = "-D%s"
-    cc.compile_options = "%{flags} -c %{infile} -s WASM=1 -o %{outfile}"
-  end
-
-  # Archiver settings
-  conf.archiver do |archiver|
-    archiver.command = "emcc"
-    archiver.archive_options = "%{objs} -s WASM=1 -o %{outfile}"
-  end
-
-  # file extensions
-  conf.exts do |exts|
-    exts.object = ".bc"
-    exts.library = ".bc"
-  end
-
-  #no executables
-  conf.bins = []
-
   # gembox
   conf.gem :core => "mruby-metaprog"
   conf.gem :core => "mruby-io"
@@ -89,5 +63,5 @@ MRuby::Build.new("host-debug") do |conf|
   # C compiler settings
   conf.cc.defines = %w(MRB_ENABLE_DEBUG_HOOK)
 
-  set_mqrb_build_conf(conf,[conf.gem :core => "mruby-bin-debugger"])
+  set_mqrb_build_conf(conf, [:core => "mruby-bin-debugger"])
 end

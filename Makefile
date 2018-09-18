@@ -43,7 +43,7 @@ wasm-with-compiler-production:
 	mkdir -p $(BUILD_DIR)
 	./tools/mruby-patcher/patch.sh
 	cd $(BUILD_DIR); cmake ../ ../ -DCMAKE_TOOLCHAIN_FILE=../wasm-toolchain.cmake -DUSE_RUBY_COMPILER=ON  -DCMAKE_BUILD_TYPE=Release
-	cd $(BUILD_DIR); make
+	cd $(BUILD_DIR); make 
 
 # ===== demo =====
 .PHONY: demo

@@ -22,10 +22,11 @@ script:
 #  - make mruby
 #  - make
 #  - export MRUBY_CONFIG="../../tools/mruby-patcher/build_config.wasm.rb"
-  - docker exec -it -e MRUBY_CONFIG="../../tools/mruby-patcher/build_config.wasm.rb" emscripten make wasm-production
+  - docker exec -it -e MRUBY_CONFIG="../../tools/mruby-patcher/build_config.wasm.rb" emscripten make demo
 
 branches:
   only:
   - master
   - stable
+  - dev
   - ci-test

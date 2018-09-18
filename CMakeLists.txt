@@ -77,9 +77,15 @@ include_directories(${INCLUDE_DIR})
 # ============================================================================================
 # sources
 FILE(GLOB SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
-add_executable(mqrb 
-  ${SOURCES}
-)
+if(${TARGET_PLATFORM} STREQUAL "wasm")
+  add_executable(mqrb 
+   ${SOURCES}
+  )
+else()
+  add_library(mqrb 
+    ${SOURCES}
+  )
+endif()
 
 # ============================================================================================
 # mruby
@@ -137,6 +143,7 @@ if(${TARGET_PLATFORM} STREQUAL "wasm")
   set_target_properties(mqrb PROPERTIES
       LINK_FLAGS "-s MODULARIZE=1\
       ${WASM_COMPILE_OPTION} \
+      --no-entry \
       --pre-js ${PROJECT_SOURCE_DIR}/src-js/mqrb-pre.js \
       --js-library ${PROJECT_SOURCE_DIR}/src-js/mqrb-lib.js \
       -s \"EXTRA_EXPORTED_RUNTIME_METHODS=['cwrap','Pointer_stringify', 'UTF8ToString']\""

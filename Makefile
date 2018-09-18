@@ -48,8 +48,8 @@ wasm-with-compiler-production:
 # ===== demo =====
 .PHONY: demo
 demo:
-	vendor/mruby/bin/mrbc demo/src/demo.rb
 	make wasm-with-compiler-production
+	vendor/mruby/bin/mrbc demo/src/demo.rb
 	cp -f $(BUILD_DIR)/mqrb-core.wasm demo/webassembly
 	cp -f $(BUILD_DIR)/mqrb-core.js demo/webassembly
 	mv -f demo/src/demo.mrb demo/webassembly

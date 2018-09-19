@@ -32,6 +32,7 @@ option(USE_EXPORT_ES6    "[WASM] Output ES6."                             OFF)
 # ============================================================================================
 # set library directory
 set(DIR_MRUBY ${PROJECT_SOURCE_DIR}/vendor/mruby)
+set(DIR_MRUBY_BUILD ${DIR_MRUBY}/build)
 
 # ============================================================================================
 # set library path
@@ -42,20 +43,39 @@ if(${TARGET_PLATFORM} STREQUAL "host")
   add_definitions(-DBUILD_HOST)
 endif()
 
-# if wasm
+# detect linking library
 if(${TARGET_PLATFORM} STREQUAL "wasm")
-  if(USE_RUBY_COMPILER)
-    message("-- mruby link: production with-ruby-compiler")
-    set(LIB_MRUBY ${DIR_MRUBY}/build/wasm-with-compiler/lib/libmruby.bc)
-    add_definitions(-DUSE_RUBY_COMPILER)
-  elseif(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    message("-- mruby link: debug")
-    set(LIB_MRUBY ${DIR_MRUBY}/build/wasm-debug/lib/libmruby.bc)
+  if(${CMAKE_BUILD_TYPE} MATCHES Release)
+    if(USE_BUILD_WASM)
+      if(USE_RUBY_COMPILER)
+        message("-- mruby library: wasm-with-compiler")
+        add_definitions(-DUSE_RUBY_COMPILER)
+        set(LIB_MRUBY ${DIR_MRUBY_BUILD}/wasm-with-compiler/lib/libmruby.bc)
+      else()
+        message("-- mruby library: wasm")
+        set(LIB_MRUBY ${DIR_MRUBY_BUILD}/wasm/lib/libmruby.bc)
+      endif() # USE_RUBY_COMPILER
+    else()
+      if(USE_RUBY_COMPILER)
+        message("-- mruby library: asm-with-compiler")
+        add_definitions(-DUSE_RUBY_COMPILER)
+        set(LIB_MRUBY ${DIR_MRUBY_BUILD}/asm-with-compiler/lib/libmruby.bc)
+      else() # USE_RUBY_COMPILER
+        message("-- mruby library: asm")
+        set(LIB_MRUBY ${DIR_MRUBY_BUILD}/asm/lib/libmruby.bc)
+      endif() # USE_RUBY_COMPILER
+    endif() # USE_BUILD_WASM
   else()
-    message("-- mruby link: production")
-    set(LIB_MRUBY ${DIR_MRUBY}/build/wasm/lib/libmruby.bc)
-  endif()
-endif()
+    if(USE_RUBY_COMPILER)
+      message("-- mruby library: wasm-with-compiler-debug")
+      add_definitions(-DUSE_RUBY_COMPILER)
+      set(LIB_MRUBY ${DIR_MRUBY_BUILD}/wasm-with-compiler-debug/lib/libmruby.bc)
+    else()
+      message("-- mruby library: wasm-debug")
+      set(LIB_MRUBY ${DIR_MRUBY_BUILD}/wasm-debug/lib/libmruby.bc)
+    endif() # USE_RUBY_COMPILER
+  endif() # Release
+endif() #if wasm
 
 # ============================================================================================
 # configuration
@@ -127,10 +147,12 @@ if(${TARGET_PLATFORM} STREQUAL "wasm")
   # option: build wasm
   if(USE_BUILD_WASM)
     string(APPEND WASM_COMPILE_OPTION "-s WASM=1 ")
+    string(APPEND WASM_COMPILE_OPTION "-s ALLOW_MEMORY_GROWTH=1 ")
+  else()
+    string(APPEND WASM_COMPILE_OPTION "-s WASM=0 ")
   endif()
 
   # memory
-  string(APPEND WASM_COMPILE_OPTION "-s ALLOW_MEMORY_GROWTH=1 ")
   string(APPEND WASM_COMPILE_OPTION "-s BINARYEN_MEM_MAX=2147418112 ")
   string(APPEND WASM_COMPILE_OPTION "-s TOTAL_MEMORY=64MB ")
 

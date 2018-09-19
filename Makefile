@@ -65,9 +65,9 @@ asm-with-compiler:
 .PHONY: demo
 demo:
 	#make wasm-with-compiler
-	make asm
+	make wasm
 	vendor/mruby/bin/mrbc demo/src/demo.rb
-	#cp -f $(BUILD_DIR)/mqrb-core.wasm demo/webassembly
+	cp -f $(BUILD_DIR)/mqrb-core.wasm demo/webassembly
 	cp -f $(BUILD_DIR)/mqrb-core.js demo/webassembly
 	mv -f demo/src/demo.mrb demo/webassembly
 

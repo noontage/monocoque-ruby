@@ -17,7 +17,13 @@ The final aim of mqrb is a skeleton is generated with one command and try ruby o
 
 ## How to use
 
-It still haven't impleiment command-line-tools.
+```bash
+gem install mqrb
+```
+
+```bash
+mqrb create-app myapp --runtime=mqrb-with-compiler
+```
 
 
 ## How to build
